@@ -227,3 +227,193 @@ print("……")
 print("Thtal number of aliens: " + str(len(aliens)))
 ```
 在这个示例中，首先创建了一个空列表，用于存储接下来将创建的所有外星人。在alien_number处，range()返回一系列数字，其唯一的用途是告诉Python我们要重复这个循环多少次。每次执行这个循环时，都创建一个外星人，并将其附加到列表aliens末尾。在alien处，使用切片来打印前五个外星人；在print处，打印列表的长度，以证明确实创建了30个外星人。
+这些外星人都具有相同的特征，但在Python看来，每个外星人都时对立的，这然我们能够独立地修改每个外星人。
+在什么情况下需要处理成群结队的外星人呢？想象一下，可能随着游戏的进行，有些外星人会变色且移动速度会加快。必要时，我们可以使用for循环和if语句来修改某些外星人的颜色。例如，要将前三个外星人修改为黄色的、速度为中等且值10个点，可以这样做：
+```Python
+# 创建一个用于存储外星人的空列表
+aliens = []
+
+# 创建30个绿色的外星人
+for alien_number in range(0,30):
+    new_alien = {'color':'green', 'points': 5, 'speed':'slow'}
+    aliens.append(new_alien)
+
+for alien in alien[0:3]:
+    if alien['color'] == 'green':
+        alien['color'] = 'yellow'
+        alien['speed'] = 'medium'
+        alien['points'] = 10
+
+# 显示前五个外星人
+for alien in aliens[0:5]:
+    print(alien)
+print("……")
+```
+你可以进一步扩展这个循环，在其中添加一个elif代码块，将黄色外星人改为移动速度快且值15个点的红色外星人，如下所示(这里只列出了循环，而没有列出整个程序):
+```Python
+for alien in aliens[0:3]:
+    if alien['color'] == 'green':
+        alien['color'] = 'yellow'
+        alien['speed'] = 'medium'
+        alien['points'] = 10
+    elif alien['color'] == 'yellow':
+        alien['color'] = 'red'
+        alien['speed'] = 'fast'
+        alien['points'] = 15
+```
+经常需要在列表中包含大量的字典，而其中每个字典都包含特定对象的众多信息。例如，你可能需要为网站的每个用户创建一个字典(就像6.3.1节那样)，并将这些字典存储在一个名为users的列表中。在这个列表中，所有字典的结构都相同，因此你可以遍历这个列表，并以相同的方式处理其中的每个字典。
+### 6.4.2 在字典中存储列表
+有时候，需要将列表存储在字典中，而不是将字典存储在列表中。例如，你如何描述顾客点的比萨呢？如果使用列表，只能存储要添加的比萨配料；但如果使用字典，就不仅可在其中包含配料列表，还可包含其他有关比萨的描述。
+在下面的示例中，存储了比萨的两方面信息：外皮类型和配料列表。其中的配料列表是一个与键'toppings'相关联的值。要访问该列表，我们使用字典名和键'toppings'，就像访问字典中的其他值一样。这将返回一个配料列表，而不是单个值：
+```Python
+# 存储所点比萨的信息
+pizza = {
+    'crust':'thick',
+    'toppings':['mushrooms', 'extra cheese'],
+}
+
+# 概述所点的比萨
+print("You ordered a " + pizza['crust'] + "-crust pizza " + "with the following toppings:")
+
+for topping in pizza['toppings']:
+    print("\t" + topping)
+```
+每当需要在字典中将一个键关联到多个值时，都可以在字典中嵌套一个列表。在本章前面有关喜欢的编程语言的示例中，如果将每个人的回答都存储在一个列表中，被调查者就可选择多种喜欢的语言。在这种情况下，当我们遍历字典时，与每个被调查者相关联的都是一个语录列表，而不是一种语言；因此，在遍历该字典的for循环中，我们需要在使用一个for循环来遍历与被调查者相关联的语言列表：
+```Python
+favorite_languages = {
+    'jen':['python','ruby'],
+    'sarah':['c'],
+    'edward':['ruby','go'],
+    'phil':['python','haskell'],
+}
+
+for name, languages in favorite_languages.items():
+    print("\n" + name.title() + " 's favorite languages are:")
+    for language in languages:
+        print("\t" + language.title())
+```
+为进一步改进这个程序，可在遍历字典的for循环开头添加一条if语句，通过查看len(languages)的值来确定当前的被调查者喜欢的语言是否有多种。如果他喜欢的语言有多种，就像以前一样显示输出；如果只有一种，就相应修改输出的措辞，如显示Sarah's favorite language is C。
+**注意** 列表和字典的嵌套层级不应太多。如果嵌套层级比前面的示例多得多，很有可能更简单的解决问题的方案。
+### 6.4.3 在字典中存储字典
+可在字典中嵌套字典，但这样做时，代码可能很快复杂起来。例如，如果有多个网站用户，每个都有独特的用户名，可在字典中将用户名作为键，然后将每位用户的信息存储在一个字典中，并将该字典作为与用户名相关联的值。在下面的程序中，对于每位用户，我们都存储了其他三项信息：名、姓和居住地；为访问这些信息，我们遍历所有的用户名，并访问与每个用户名相关联的信息字典：
+```Python
+users = {
+    'aeinstein':{
+        'first':'albert',
+        'last':'einstein',
+        'location':'princeton',
+    },
+
+    'mcurie':{
+        'first':'marie',
+        'last':'curie',
+        'location':'paris',
+    }
+}
+
+for username, user_info in user.items():
+    print("\hUsername: " + username)
+    full_name = user_info['first'] + " " + user_info['last']
+    location = user_info['location']
+
+print("\tFull name: " + full_name.title())
+print("\tLocation: " + location.title())
+```
+**请注意**表示每位用户的字典的结构都相同，虽然Python并没有这样的要求，但这使得嵌套的字典处理起来更容易。倘若表示每位用户的字典都包含不同的键，for循环内部的代码将更复杂。
+# 第7章 用户输入和while循环
+大多数程序都旨在解决最终用户的问题，为此通常需要从用户那里获取一些信息。
+## 7.1 函数input()的工作原理
+函数input()让程序暂停运行，等待用户输入一些文本。获取用户输入后，Python将其存储在一个变量中，以方便你使用。
+例如，下面的程序让用户输入一些文本，再将这些文本呈现给用户：
+```Python
+message = input("Tell me something, and I will repeat it back to you: ")
+print(message)
+```
+函数input()接受一个参数：即要向用户显示的提示或说明，让用户知道该如何做。再这个示例中，Python运行第1行代码时，用户将看到提示Tell me something, and I will repeat it back to you: 。程序等待用户输入，并在用户按回车键后继续运行。输入存储在变量message中，接下来的print(message)将输入呈现给用户：
+**注意** Sublime Text不能运行提示用户输入的程序。你可以使用Sublime Text来编写提示用户输入的程序，但必须从终端运行它们。
+### 7.1.1 编写清晰的程序
+每当你使用函数input()时，都应指定清晰而易于明白的提示，准确地指出你希望用户提供什么样的信息——指出用户该输入任何信息提示都行，如下所示：
+```Python
+name = input("Please enter your name: “)
+print("Hello, " + name + "!")
+```
+通过在提示末尾(这里是冒号后面)包含一个空格，可将提示于用户输入分开，让用户清楚地知道其输入始于何处。
+有时候，提示可能超过一行，例如，你可能需要指出获取特定输入的原因。在这种情况下，可将提示存储在一个变量中，再将该变量传递给函数input()。这样，即便提示超过一行，input()语句也非常清晰。
+```Python
+prompt = "If you tell us who you are, we can personalize the messages you see."
+prompt += "\nWhat is your first name? "
+
+name = input(prompt)
+print("\nHello, " + name + "!")
+```
+### 7.1.2 使用int()来获取数值输入
+使用函数input()时，Python将用户输入解读为字符串。请看下面让用户输入其年龄的解释器会话：
+```Python
+>>> age = input("How old are you? ")
+How old are you? 21
+>>> age
+'21'
+```
+用户输入的是数字21，但我们请求Python提供变量age的值时，它返回的是'21'——用户输入的数值的字符串表示。我们怎么知道Python将输入解读成了字符串呢？因为这个数字用引号括起来了。如果我们只想打印输入，这一点问题都没有；但如果你试图将输入作为数字使用，就会引发错误。
+
+如何再实际程序中使用函数int()呢？请看下面的程序，它判断一个人是否满足坐过山车的身高要求：
+```Python
+height = input("How tall are you, in inches? ")
+height = int(height)
+
+if height >= 36:
+    print("\nYou're tall enough to ride!")
+else:
+    print("\nYou'll be able to ride when you're a little older.")
+```
+### 7.1.3 求模运算符
+处理数值信息时，求模运算符(%)是一个很有用的工具，它将两个数相除并返回余数：
+```Python
+>>> 4 % 3
+1
+>>>5 % 3
+2
+```
+求模运算符不会指出一个数是另一个数的多少倍，而只指出余数是多少。
+如果一个数可被另一个数整除，余数就为0，因此求模运算符将返回0。
+### 7.1.4 再Python2.7中获取输入
+如果你使用的时Python2.7，应使用函数raw_input()来提示用户输入。这个函数与python3中的input()一样，也将输入解读为字符串。
+## 7.2 while循环简介
+for循环用于针对集合中的每个元素都一个代码块，而while循环不断地运行，直到指定的条件不满足为止。
+### 7.2.1 使用while循环
+你可以使用while循环来数数，例如，下面的while循环从1数到5：
+```Python
+current_number = 1
+while current_number <= 5:
+    print(current_number)
+    current_number += 1
+```
+### 7.2.2 让用户选择何时退出
+可使用while循环让程序再用户愿意时不断地运行，如下面的程序所示。我们再其中定义了一个退出值，只要用户输入的不是这个值，程序就接着运行：
+```Python
+prompt = "\nTell me something, and I will repeat it back to you:"
+prompt += "\nEnter 'quit' to end the program."
+message = ""
+while message != 'quit':
+    message = input(prompt)
+    print(message)
+```
+### 7.2.3 使用标志
+在前一个示例中，我们让程序在满足指定条件时就执行特定的任务。但在更复杂的程序中，很多不同的事件都会导致程序停止运行；在这种情况下，该怎么办呢？
+例如，在游戏中，多种事件都可能导致游戏结束，如玩家一艘飞船都没有了或要保护的城市都被摧毁了。导致程序结束的事件有很多时，如果在一条while语句中检查所有这些条件，将既复杂又困难。
+在要求很多条件都满足才继续运行的程序中，可定义一个变量，用于判断整个程序是否处于活动状态。这个变量被称为**标志**，充当了程序的交通信号灯。你可让程序在标志为True时继续运行，并在任何事件导致标志的值为False时让程序停止运行。这样，在while语句中就只需检查一个条件——标志的当前值是为True，并将所有测试(是否发生了应将标志设置为False的事件)都放在其他地方，从而让程序变得更为整洁。
+下面来在前一节的程序中添加一个标志。我们把这个标志命名为active(可给它指定任何名称),它将用于判断程序是否应继续运行：
+```Python
+prompt = "\nTell me something, and I will repeat it back to you:"
+prompt += "\nEnter 'quit' to end the program. "
+
+active = True
+while active:
+    message = input(prompt)
+
+    if message == 'quit':
+        active = False
+    else:
+        print(message)
+```
+我们将变量active设置成了True，让程序最初处于活动状态。这样就简化了while语句，因为不需要在其中做任何比较——相关的逻辑由程序的其他部分处理。只要变量active为True，循环就将继续运行。
