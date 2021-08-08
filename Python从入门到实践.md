@@ -417,3 +417,453 @@ while active:
         print(message)
 ```
 我们将变量active设置成了True，让程序最初处于活动状态。这样就简化了while语句，因为不需要在其中做任何比较——相关的逻辑由程序的其他部分处理。只要变量active为True，循环就将继续运行。
+### 7.2.4 使用break退出循环
+要立即退出while循环，不再运行循环中余下的代码，也不管条件测试的结果如何，可使用break语句。break语句用于控制程序流程，可使用它来控制那些代码将执行，那些代码不执行，从而让程序按你的要求执行你要执行的代码。
+例如，来看一个让用户指出他到过哪些地方的程序。在这个程序中，我们可以用户输入'quit'后使用break语句立即退出while循环：
+```Python
+prompt = "\nPlease enter the name of a city you have visited:"
+prompt += "\n(Enter 'quit' when you are finished.)"
+
+while True:
+    city = input(prompt)
+
+    if  city = 'quit':
+        break
+    else:
+        print("I'd love to go to " + city.title() + "!")
+```
+**注意** 在任何Python循环中都可以使用break语句。例如，可使用break语句来退出遍历列表或字典的for循环。
+### 7.2.5 在循环中并使用continue
+要返回到循环开头，并根据条件测试结果决定是否继续执行循环，可使用continue语句，它不像break语句那样不再执行余下的代码并退出整个循环。例如，来看一下从1数到10，但只打印其中偶数的循环：
+```Python
+curren_number = 0
+while current_number < 10:
+    current_number += 1
+    if current_number % 2 == 0:
+        countinue
+    
+    print(current_number)
+```
+### 7.2.6 避免无限循环
+每个while循环都必须有停止运行的途径，这样才不会没完没了地执行下去。例如，下面的循环从1数到5：
+```Python
+x = 1
+while x <= 5:
+    print(x)
+    x += 1
+```
+**注意** 有些编辑器(如Sublime Text)内嵌了输出窗口，这可能导致难以结束无限循环，因此不得不关闭编辑器来结束无限循环。
+## 7.3 使用while循环来处理列表和字典
+到目前为止，我们每次都只处理了一项用户信息：获取用户的输入，再将输入打印出来或做出应答；循环再次运行时，我们获悉另一个输入值并作出响应。然而，要记录大量的用户和信息，需要在while循环中使用列表和字典。
+for循环是一种遍历列表的有效方式，但在for循环中不应该修改列表，否则将导致Python难以跟踪其中的元素。要在遍历列表的同时对其进行修改，可使用while循环。通过将while循环同列表和字典结合起来使用，可收集、存储并组织大量输入，供以后查看和显示。
+### 7.3.1 在列表之间移动元素
+假设有一个列表，其中包含新注册但还未验证的网站用户；验证这些用户后，如何将他们移到另一个已验证用户列表中呢？代码可能类似于下面这样：
+```Python
+# 首先，创建一个待验证用户列表
+# 和一个用于存储已验证用户的空列表
+unconfirmed_users = ['alice', 'brian', 'candace']
+confirmed_users = []
+
+# 验证每个用户，直到没有未验证用户为止，将每个经过验证的列表都移到已验证用户列表中
+while unconfirmed_users:
+    current_user = unconfirmed_users.pop()
+
+    print("Verifying user: " + current_user.title())
+    confirmed_users.append(current_user)
+
+# 显示所有已验证的用户
+print("\nThe following users have been confirmed:")
+for confirmed_user in confirmed_users:
+    print(confirmed_user.title())
+```
+### 7.3.2 删除包含特定值的所有列表元素
+在第3章中，我们使用函数remove()来删除列表中的特定值，这之所以可行，是因为要删除的值在列表中只出现了一次。如果要删除列表中所有包含特定值的元素，该怎么办呢？
+假设你有一个宠物列表，其中包含多个值为'cat'的元素。要删除所有这些元素，可不断运行一个while循环，直到列表中不再包含值'cat'，如下所示：
+```Python
+pets = ['dog', 'cat', 'dog', 'goldfish', 'cat', 'rabbit', 'cat']
+print(pets)
+
+while 'cat' in pets:
+    pets.remove('cat')
+
+print(pets)
+```
+### 7.3.3 使用用户输入来填充字典
+可使用while循环提示用户输入任意数量的信息。下面来创建一个调查程序，其中的循环每次执行时都提示输入被调查者的名字和回答。我们将收集的数据存储在一个字典中，以便将回答同被调查者关联起来：
+```Python
+# 设置一个标志，指出调查是否继续
+polling_active = True
+
+while polling_active:
+    # 提示输入被调查者的名字和回答
+    name = input("\nWhat is your name? ")
+    response = input("Which mountain would you like to climb someday? ")
+
+    # 将答卷存储在字典中
+    responses[name] = response
+
+    # 看看是否还有人要参与调查
+    repeat = input("Would you like to let another person respond? (yes/ no) ")
+    if repeat == 'no':
+        polling_active = False
+
+# 调查结束，显示结果
+print("\n--- Poll Results ---")
+for name, response in responses.items():
+    print(name + " would like to climb " + response + ".")
+```
+# 第8章 函数
+函数是带名字的代码块，用于完成具体的工作。
+要执行函数定义的特定任务，可调用该函数。需要在程序中多次执行同一项任务时，你无需反复编写完成该任务的代码，而只需调用执行该任务的函数，让Python运行其中的代码。你将发现，通过使用函数，程序的编写、阅读、测试和修复都将更容易。
+## 8.1 定义函数
+下面是一个打印问候语的简单函数，名为great_user():
+```Python
+def greet_user():
+    """显示简单的问候语"""
+    print("Hello!)
+
+greet_user()
+```
+这个示例演示了最简单的函数结构。def处的代码行使用关键字def来告诉Python你要定义一个函数。这是**函数**定义，向Python指出了函数名，还可能在括号内指出函数为完成其任务需要什么样的信息。在这里，函数名为greet_user()，它不需要任何信息就能完成其工作，因此括号是空的(即便如此，括号也必不可少)。最后，定义以冒号结尾。
+紧跟在def greet():后面的所有缩进进行构成了函数体。注释处的文本是被称为**文档字符串(docstring)**的注释，描述了函数是做什么的。文档字符串用三引号括起，Python使用它们来生成有关程序中函数的文档。
+代码行print("Hello!")是函数体内的唯一一行代码，greet_user()只做一项工作：打印Hello!。
+要使用这个函数，可调用它。**函数调用**让Python执行函数的代码。要**调用**函数，可依次指定函数名以及用括号括起的必要信息，如greet_user()处所示。由于这个函数不需要任何信息，因此调用它时只需要输入greet_user()即可。和预期的一样，它打印Hello!。
+### 8.1.1 向函数传递信息
+只需稍作修改，就可以让函数greet_user()不仅向用户显示Hello！，还将用户的名字用作抬头。为此可在函数定义def greet_user()的括号内添加username。通过在这里添加username,就可让函数接受你给username指定的任何值。现在，这个函数要求你调用它时给username指定一个值。调用greet_user()时，可将一个名字传递给它，如下所示：
+```Python
+def greet_user(username):
+    """显示简单的问候语"""
+    print("Hello, " + username.title() + "!")
+
+greet_user('jesse')
+```
+代码greet_user('jesse')调用函数greet_user()并向它传递'sarah',打印Hello, Sarah!。你可以根据需要调用函数greet_user()任意次，调用时无论传入什么样的名字，都会生成相应的输出。
+### 8.1.2 实参和形参
+前面定义函数greet_user()时，要求给变量username指定一个值。调用这个函数并提供这种信息(人名)时，它将打印相应的问候语。
+
+在函数greet_user()的定义中，变量username是一个**形参**——函数完成其工作所需的一项信息。在代码greet_user('jesse')中，值'jesse'是一个**实参**。实参是调用函数时传递给函数的信息。我们调用函数时，将要让函数使用的信息放在括号内。在greet_user('jesse')中，将实参'jesse'传递给了函数greet_user()，这个值被存储在形参username中。
+**注意** 大家有时候会形参、实参不分，因此如果你看到有人将函数定义中的变量称为实参或将函数调用中的变量称为形参，不要大惊小怪。
+## 8.2 传递实参
+鉴于函数定义时可能包含多个形参，因此函数调用中也可能包含多个实参。向函数传递实参的方式很多，可使用**位置实参**，这要求实参的顺序与形参的顺序相同；也可使用**关键字实参**，，其中每个实参都有变量名和值组成；还可使用列表和字典。下面来依次介绍这些方式。
+### 8.2.1 位置实参
+你调用函数时，Python必须将函数调用中的每个实参都关联到函数定义中的一个形参。为此，最简单的关联方式是基于实参的顺序。这种关联方式被称为**位置实参**。为明白其中的工作原理，来看一个显示宠物信息的函数。这个函数指出一个宠物属于那种动物以及它叫什么名字，如下所示：
+```Python
+def describe_pet(animal_type, pet_name):
+    """显示宠物的信息"""
+    print("\nI have a " + animal_type + ".")
+    print("My " + animal_type + "'s name is " + pet_name.title() + ".")
+
+describle_pet('hamster', 'harry')
+```
+1. 调用函数多次
+你可以根据需要调用函数任意次。要再描述一个宠物，只需再次调用describle_pet()即可：
+```Python
+def describe_pet(animal_type, pet_name):
+    """显示宠物的信息"""
+    print("\nI have a " + animal_type + ".")
+    print("My " + animal_type + "'s name is " + pet_name.title() + ".")
+
+describe_pet('hamster', 'harry')
+describe_pet('dog', 'whillie')
+```
+再函数中，可根据需要使用任意数量的位置实参，Python将按顺序将函数调用中的实参关联到函数定义中相应的形参。
+2. 位置实参的顺序很重要
+使用位置实参来调用函数时，如果实参的顺序不正确，结果可能出乎意料：
+### 8.2.2 关键字实参
+**关键字实参**是传递给函数的名称——值对。你直接在实参中将名称和值关联起来了，因此向函数传递实参时不会混淆(不会得到名为Hamster的harry这样的结果)。关键字实参让你无需考虑函数调用中的实参顺序，还清楚地指出了函数调用中各个值的用途。
+下面来重新编写pets，在其中使用关键字实参来调用describle_pet():
+```Python
+def describe_pet(animal_type, pet_name):
+    """显示宠物的信息"""
+    print("\nI have a " + animal_type + ".")
+    print("My " + animal_type + "'s name is " + pet_name.title() + ".")
+
+describe_pet(animal_type = 'hamster', pet_name = 'harry')
+```
+函数describe_pet()还是原来那样，但调用这个函数时，我们向Python明确地指出了各个实参对应的形参。看到这个函数调用时，Python直到应该将实参'hamster'和'harry'分别存储在形参animal_type和pet_name中。输出正确无误，它指出我们有一只名为Harry的仓鼠。
+
+关键字实参的顺序无关紧要，因为Python知道各个值该存储到哪个形参中。下面两个函数调用时等效的：
+```Python
+describe_pet(animal_type = 'hamster', pet_name = 'harry')
+describe_pet(pet_name = 'harry', animal_type = 'hamster')
+```
+**注意** 使用关键字实参时，务必准确的指定函数定义中的形参名。
+### 8.2.3 默认值
+编写函数时，可给每个形参指定**默认值**。在调用函数中给形象提供了实参时，Python将使用指定的实参值；否则，将使用形参的默认值。因此，给形参指定默认值后，可在函数调用中省略相应的实参。使用默认值可简化函数调用，还可清楚地指出函数的典型用法。
+例如，如果你发现调用describle_pet()时，描述的大都是小狗，就可将形参animal_type的默认值设置为'dog'。这样，调用describle_pet()来描述小狗时，就可不提供这种信息：
+```Python
+def describe_pet(pet_name, animal_type = 'dog'):
+    """显示宠物的信息"""
+    print("\nI have a " + animal_type + ".")
+    print("My " + animal_type + "'s name is " + pet_name.title() + ".")
+
+describe_pet(pet_name = "willie')
+```
+这里修改了函数describle_pet()的定义，在其中给形参animal_type指定了默认值'dog'。这样，调用这个函数时，如果没有给animal_type指定值，Python将把这个形参设置为'dog'。
+**请注意**，在这个函数的定义中，修改了形参的排列顺序。由于给animal_type指定了默认值，无需通过实参来指定动物类型。因此在函数调用中只包含一个实参——宠物的名字。然而，Python依然将这个实参视为位置实参，因此如果函数调用中只包含宠物的名字，这个实参将关联到函数定义中的第一个形参。这就需要将pet_name放在形参列表开头的原因所在。
+如果要描述的动物不是小狗，可使用类似于下面的函数调用：
+```Python
+describe_pet(pet_name = 'harry', animal_type = 'hamster')
+```
+由于显示地给animal_type提供了实参，因此Python将忽略这个形参的默认值。
+**注意** 使用默认值时，在形参列表中必须先列出没有默认值的形参，再列出的默认值的实参。这让Python依然能够正确地解读位置实参。
+### 8.2.4 等效的函数调用
+鉴于可混合使用位置实参、关键字实参和默认值，通常有多种等效的函数调用方式。请看下面的函数describle_pets()的定义，其中给一个形参提供了默认值：
+```Python
+def describe_pet(pet_name, animal_type = 'dog')
+```
+基于这种定义，再任何情况下都必须个pet_name提供实参；指定该实参时可以使用位置方式，也可以使用关键字方式。如果要描述的动物不是小狗，还必须再函数调用中给animal_type提供实参；同样，指定该实参时可以使用位置方式，也可以使用关键字方式。下面对这个函数的所有调用都可行：
+```Python
+# 一条名为Willie的小狗
+describe_pet('willie')
+describe_pet(pet_name = 'willie')
+
+# 一只名为Harry的仓鼠
+describe_pet('harry', 'hamster')
+describe_pet(pet_name = 'harry', animal_type = 'hamster')
+describe_pet(animal_type = 'hamster', pet_name = 'harry')
+```
+这些函数调用的输出与前面的示例相同。
+**注意** 使用那种调用方式无关紧要，只要函数调用能生成你希望的输出就行。使用对你来说最容易理解的调用方式即可。
+
+### 8.2.5 避免实参错误
+等你开始使用调用函数后，如果遇到实参不匹配错误，不要大惊小怪。你提供的实参多于或少于函数完成其工作所需的信息时，将出现实参不匹配错误。例如，如果调用函数describe_pet()时没有指定任何实参，结果是Python发现该函数调用缺少必要的信息，而traceback(回溯)指出了这一点。
+
+## 8.3 返回值
+函数并非总是直接显示输出，相反，它可以处理一些数据，并返回一个或一组值。函数返回的值被称为**返回值**。再函数中，可使用return语句将值返回到调用函数的代码行。
+返回值让你能够将程序的大部分繁重工作移到函数中去完成，从而简化主程序。
+
+### 8.3.1 返回简单值
+下面来看一个函数，它接受名和姓并返回整洁的姓名：
+```Python
+def get_formatted_name(first_name, last_name):
+    """返回整洁姓名"""
+    full_name = frst_name + ' ' + last_name
+    return full_name.title()
+
+musician = get_formatted_name('jimi', 'hendrix')
+print(musician)
+```
+
+### 8.3.2 让实参变成可选的
+有时候，需要让实参变成可选的，这样使用函数的人就只需要必要时才提供额外的信息。可使用默认值来让实参变成可选的。
+例如，假设我们要扩展函数get_formatted_name()，使其还处理中间名。为此，可将其修改成类似于下面这样：
+```Python
+def get_formatted_name(first_name, middle_name, last_name):
+    """返回整洁的姓名"""
+    full_name = first_name + ' ' + middle_name + ' ' + last_name
+    return full_name.title()
+
+musician = get_formatted_name('john', 'lee', 'hooker')
+print(musician)
+```
+只要同时提供名、中间名和姓，这个函数就能正确地运行。它根据这三个部分创建一个字符串，再适当的地方加上空格，并将结果转换为首字母大写格式。
+
+然而，并非所有的人都有中间名，但如果你调用这个函数时只提供了名和姓，它将不能正确地运行。为让中间名变成可选的，可给实参middle_name指定一个默认值——空字符串，并在用户没有提供中间名时不使用这个实参。为让get_formatted_name()在没有提供中间名时依然可行，可给实参middle_name指定一个默认值——空字符串，并将其移到形参列表的末尾：
+```Python
+def get_formatted_name(first_name, last_name, middle_name = ''):
+    """返回整洁的姓名"""
+    if middle_name:
+        full_name = first_name + ' ' + middle_name + ' ' + last_name
+    else:
+        full_name = first_name + ' ' + last_name
+    return full_name.title()
+
+musician = get_formatted_name('jimi', 'hendrix')
+print(musician)
+
+musician = get_formatted_name('john', 'hooker', 'lee')
+print(musician)
+```
+在函数体中，我们检查是否提供了中间名。Python将非空字符串解读为True。
+可选值让函数能够处理各种不同情形的同时，确保函数调用尽可能简单。
+
+### 8.3.3 返回字典
+函数可返回任何类型的值，包括列表和字典等较复杂的数据结构。例如，下面的函数接受姓名的组成部分，并返回一个表示人的字典：
+```Python
+def build_person(first_name, last_name):
+    """返回一个字典，其中包含有关一个人的信息"""
+    person = {'first': first_name, 'last': last_name}
+    return person
+
+musician = build_person('jimi', 'hendrix')
+print(musician)
+```
+这个函数接受简单的文本信息，将其放在一个更合适的数据结构中，让你不仅能打印这些信息，还能以其他方式处理它们。当前，字符串'jimi'和'hendrix'被标记为名和姓。你可以轻松地扩展这个函数，使其接受可选值，如中间名、年龄、职业或你要存储的其他任何信息。例如，下面的修改让你还能存储年龄：
+```Python
+def build_person(first_name, last_name, age=''):
+    """返回一个字典，其中包含有关一个人的信息"""
+    person = {'first': fist_name, 'last': last_name}
+    if age:
+        person['age'] = age
+    return person
+
+musician = build_person('jimi', 'hendrix', age = 27)
+print(musician)
+```
+在函数定义中，我们新增了一个可选形参age，并将其默认值设置为空字符串。如果函数调用中包含这个形参的值，这个值将存储到字典中。在任何情况下，这个函数都会存储人的姓名，但可对其进行修改，使其也存储有关人的其他信息。
+
+### 8.3.4 结合使用函数和while循环
+可将函数同本书前面介绍的任何Python结构结合起来使用。例如，下面将结合使用函数get_formatted_name()和while循环，以更正规的方式问候用户。下面尝试使用名和姓跟用户打招呼：
+```Python
+def get_formatted_name(first_name, last_name):
+    """返回整洁的姓名"""
+    full_name = first_name + ' ' + last_name
+    return full_name.title()
+
+# 这是一个无限循环!
+while True:
+    print("\nPlease tell me you name:")
+    f_name = input("First name: ")
+    l_name = input("Last name: ")
+
+formatted_name = get_formatted_name(f_name, l_name)
+print("\nHello, " + formatted_name + "!")
+```
+在这个示例中，我们使用的是get_formatted_name()的简单版本，不涉及中间名。其中的while循环让用户输入姓名：依次提示用户输入名和姓。
+
+但这个while循环存在一个问题：没有定义退出条件。请用户提供一系列输入时，该在什么地方提供退出条件呢？我们要让用户能够尽可能容易地退出，因此每次提示用户输入时，都应提供退出途径。每次提示用户输入时，都使用break语句提供了退出循环的简单途径：
+```Python
+def get_formatted_name(first_name, last_name):
+    """返回整洁的姓名"""
+    full_name = first_name + ' ' + last_name
+    return full_name.title()
+
+while True:
+    print("\nPlease tell me your name:")
+    print("(enter 'q' at any time to quit)")
+
+    f_name = input("First name: ")
+    if f_name == 'q':
+        break
+
+    l_name = input("Last name: ")
+    if l_name == 'q':
+        break
+    
+    formatted_name = get_formatted_name(f_name, l_name)
+    print("\nHello, " + formatted_name + "!")
+```
+我们添加了一条消息来告诉用户如何退出，然后再每次提示用户输入时，都检查他输入的是否是退出值，如果是，就退出循环。现在，这个程序将不断地问候，直到用户输入的姓或名为'q'为止。
+
+## 8.4 传递列表
+你经常会发现，向函数传递列表很有用，这种列表包含的可能是名字、数字或更复杂的对象(如字典)。将列表传递给函数后，函数就能直接访问其内容。下面使用函数来提高处理列表的效率。
+
+假设有一个用户列表，我们要问候其中的每位用户。下面的示例将一个名字列表传递给一个名为greet_users()的函数，这个函数问候列表中的每个人：
+```Python
+def greet_users(names):
+    """向列表中的每位用户都发出简单的问候"""
+    for name in names:
+        msg = "Hello, " + name.title() + "!"
+        print(msg)
+
+usernames = ['hannah', 'ty', 'margot']
+greet_users(usernames)
+```
+
+### 8.4.1 在函数中修改列表
+将列表传递给函数后，函数就可对其进行修改。在函数中对这个列表所做的任何修改都是永久性的，这让你能够高效地处理大量的数据。
+
+来看一家为用户提交的设计制作3D打印模型的公司。需要打印的设计存储在一个列表中，打印后移动到另一个列表中。下面是在不使用函数的情况下模拟这个过程的代码：
+```Python
+# 首先创建一个列表，其中包含一些要打印的设计
+unprinted_designs = ['iphone case', 'robot pendant', 'dodecahedron']
+completed_models = []
+
+# 模拟打印每个设计，直到没有未打印的设计为止
+# 打印每个设计后，都将其移动到列表completed_models中
+while unprinted_designs:
+    current_design = unprinted_designs.pop()
+
+    # 模拟根据设计制作3D打印模型的过程
+    print("Printing model: " + current_design)
+    completed_models.append(current_design)
+
+# 显示打印好的所有模型
+print("\nThe following models have been printed:")
+for completed_model in completed_models:
+    print(completed_model)
+```
+为重新组织这些代码，我们可编写两个函数，每个都做一件具体的工作。大部分代码都与原来相同，只是效率更高。第一个函数将负责处理打印设计的工作，而第二个将概述打印了那些设计：
+```Python
+def print_models(unprinted_designs, completed_models):
+    """
+    模拟打印每个设计，直到没有未打印的设计为止
+    打印每个设计后，都将其移动到列表completed_models中
+    """
+    while unprinted_designs:
+        current_design = unprinted_designs.pop()
+
+        # 模拟根据设计制作3D打印模型的过程
+        print("Printing model: " + current_design)
+        completed_models.append(current_design)
+
+def show_complete_models(completed_models):
+    """显示打印好的所有模型"""
+    print("\nThe following models have been printed:")
+    for completed_model in completed_models:
+        print(completed_model)
+
+unprinted_designs = ["iphone case', 'robot pendant', 'dodecahedron']
+completed_models = []
+
+print_models(unprinted_designs, completed_models)
+show_completed_models(completed_models)
+```
+相比于没有使用函数的版本，这个程序更容易扩展和维护。如果以后需要打印其他设计，只需要再次调用print_models()即可。如果我们发现需要对打印代码进行修改，只需修改这些代码一次，就能影响所有调用该函数的地方；与必须分别修改程序的多个地方相比，这种修改的效率更高。
+
+这个程序还演示了这样一种理念，即每个函数都应只负责一项具体的工作。第一个函数打印每个设计，而第二个显示打印好的模型；这优于使用一个函数来完成两项工作。编写函数时，如果你发现它执行的任务太多，请尝试将这些代码划分到两个函数中。别忘了，总是可以在一个函数中调用另一个函数，这又助于将复杂任务划分为一系列的步骤。
+
+### 8.4.2 禁止函数修改列表
+有时候，需要禁止函数修改列表。例如，假设像前一个示例那样，你有一个未打印的设计列表，并编写了一个将这些设计移到打印好的模型列表中的函数。你可能会做出这样的决定：即便打印所有设计后，也要保留原来的未打印的设计列表，以供备案。但由于你将所有的设计都移出了unprinted_designs,这个列表变成了空的，原来的列表没有了。为解决这个问题，可向函数传递列表的的副本而不是原件；这样函数所做的任何修改都只影响副本，而丝毫不影响原件。
+要将列表的副本传递给函数，可以像下面这样做：
+```Python
+function_name(list_name[:])
+```
+切片表示法[:]创建列表的副本。在print_models中，如果不想清空未打印的设计列表，可像下面这样调用print_models():
+```Python
+print_models(unprinted_designs[:], completed_models)
+```
+这样函数print_models()依然能够完成其工作，因为它获得了所有未打印的设计的名称，但它使用的是列表unprinted_designs的副本，而不是列表unprinted_designs本身。像以前一样，列表completed_models也将包含打印好的模型的名称，但函数所做的修改不会影响到列表unprinted_designs。
+
+## 8.5 传递任意数量的实参
+有时候，你预先不知道函数需要接受多少个实参，好在Python允许函数从调用语句中收集任意数量的实参。
+
+例如，来看一个制作比萨的函数，它需要接受很多配料，但你无法预先确定顾客要多少种配料。下面的函数只有一个形参*toppings,但不管调用语句提供了多少实参，这个形参都将它们统统收入囊中：
+```Python
+def make_pizza(*toppings):
+    """打印顾客点的所有配料"""
+    print(toppings)
+
+make_pizza('pepperoni')
+make_pizza('mushrooms', 'green peppers', 'extra cheese')
+```
+形参名*toppings中的**星号**让python创建一个名为toppings的**空元组**，并将收到的所有值都封装到这个元组中。函数体内的print语句通过生成输出来证明Python能够处理使用一个值调用函数的情形，也能处理使用三个值来调用函数的情形。它以类似的方式处理不同的调用，注意，Python将实参封装到一个元组中，即便函数只收到一个值也如此。
+
+现在，我们可以将这条print语句替换为一个循环，对配料列表进行遍历，并对顾客点的比萨进行描述：
+```Python
+def make_pizza(*toppings):
+    """概述要制作的比萨"""
+    print("\nMaking a pizza with the following toppings:")
+    for topping in toppings:
+        print("- " + topping)
+
+make_pizza('pepperoni')
+make_pizza('mushrooms', 'green peppers', 'extra cheese')
+```
+不管收到的是一个值还是三个值，这个函数都能妥善地处理：
+不管函数收到地实参是多少个，这种语法都管用。
+
+### 8.5.1 结合使用位置实参和任意数量实参
+如果要让函数接受不同类型的实参，必须在函数定义中将接纳任意数量实参的形参放在最后。Python先匹配位置实参和关键字实参，再将余下的实参都收集到最后一个形参中。
+例如，如果前面的函数还需要一个表示比萨尺寸的实参，必须将该形参放在形参*toppings的前面：
+```Python
+def make_pizza(size, *toppings):
+    """概述要制作的比萨"""
+    print("\nMaking a " + str(size) + "-inch pizza with the following toppings:")
+    for topping in toppings:
+        print("- " + topping)
+
+make_pizza(16, 'pepperoni')
+make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
+```
