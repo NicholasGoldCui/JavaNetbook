@@ -867,3 +867,295 @@ def make_pizza(size, *toppings):
 make_pizza(16, 'pepperoni')
 make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
 ```
+基于上述函数定义，Python将收到的第一个值存在形参size中，并将其他的所有值都存储在元组toppings中。在函数调用中，首先指定比萨尺寸的实参，然后根据需要指定任意数量的配料。
+现在，每个比萨都有了尺寸和一系列配料，这些信息按正确的顺序打印出来了————首先是尺寸，然后是配料。
+
+### 8.5.2 使用任意数量的关键字实参
+有时候，需要接受任意数量的实参，但预先不知道传递给函数的会是什么样的信息。在这种情况下，可将函数编写成能够接受任意数量的键——值对————调用语句提供了多少就接受多少。一个这样的示例是创建用户简介：你知道你将收到有关用户的信息，但不确定会是什么样的信息。在下面的示例中，函数build_profile()接受名和姓，同时还接受任意数量的关键字实参：
+```Python
+def build_profile(first, last, **user_info):
+    """创建一个字典，其中包含我们知道的有关用户的一切"""
+    profile = {}
+
+    profile['first_name'] = first
+    profile['last_name'] = last
+    for key, value in user_info.items():
+        profile[key] = value
+    return profile
+
+user_profile = build_profile('albert', 'einstein',
+                            location = 'princeton',
+                            field = 'physics')
+print(user_profile)
+```
+函数build_profile()的定义要求提供名和姓，同时允许用户根据需要提供任意数量的名称——值对。形参**user_info中的两个星号让Python创建一个名为user_info的空字典，并将收到的所有名称——值对都封装到这个字典中。在这个函数中，可以像访问其他字典那样访问User_info中的名称——值对。
+
+编写函数时，你可以以各种方式混合使用位置实参、关键字实参和任意数量的实参。知道这些实参类型大有裨益，以为阅读别人编写的代码时经常会见到它们。要正确地使用这些类型的实参并知道它们的使用时机，需要经过一定的练习。就目前而言，牢记使用最简单的方法来完成任务就好了。你继续往下阅读，就会知道在各种情况下哪种方法的效率是最高的。
+
+## 8.6 将函数存储在模块中
+函数的优点之一是，使用它们可将代码块与主程序分离。通过函数指定描述性名称，可让主程序容易理解得多。你还可以更进一步，将函数存储在被称为**模块**的独立文件中，再将模块**导入**到主程序中。import语句允许在当前运行的程序文件中使用模块中的代码。
+
+通过将函数存储在独立的文件中，可隐藏程序代码的细节，将重点放在程序的高层逻辑上。这还能让你在众多不同的程序中重用函数。将函数存储在独立文件中后，可与其他程序导入模块的方法有多种，下面对每种都作简要的介绍。
+
+### 8.6.1 导入整个模块
+要让函数是可导入的，得先**创建模块**。**模块**是扩展名为.py的文件，包含要导入到程序中的代码。下面来创建一个包含函数make_pizza()的模块。为此，我们将文件pizza.py中除函数make_pizza()之外的其它代码都删除：
+```Python
+# pizza.py
+def make_pizza(size, *toppings):
+    """概述要制作的比萨"""
+    print("\nMaking a " + str(size)) + "-inch pizza with the following toppings:")
+    for topping in toppings:
+        print("- " + topping)
+```
+接下来，我们在pizza.py所在的目录中创建另一个为making_pizzas.py的文件，这个文件导入刚创建的模块，再调用make_pizza()两次：
+```Python
+# making_pizzas.py
+import pizza
+
+pizza.make_pizza(16, 'pepperoni')
+pizza.make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
+```
+Python读取这个文件时，代码行import pizza让Python打开文件pizza.py，并将其中的所有函数都复制到这个程序中。你看不到复制的代码，因为这个程序运行时，Python在幕后复制这些代码。你只需知道，在making_pizzas.py中，可以使用pizza.py中定义的所有函数。
+
+要调用被导入的模块中的函数，可指定导入的模块的名称pizza和函数名make_pizza()，并用句点分隔它们。这些代码的输出与没有导入模块的原始程序相同。
+
+这就是一种导入方法：只需编写一条import语句并在其中指定模块名，就可在程序中使用该模块中的所有函数。如果你使用这种import语句导入了名为module_name.py的整个模块，就可使用下面的语法来使用其中任何一个函数：
+```Python
+moudle_name.function_name()
+```
+### 8.6.2 导入特定的函数
+你还可以导入模块中的特定函数，这种导入方法的语法如下：
+```python
+from moudle_name import function_name
+```
+通过用逗号分隔函数名，可根据需要从模块中导入任意数量的函数：
+```Python
+from moudle_name import function_0, function_1, function_2
+```
+对于前面的making_pizzas.py示例，如果只想导入要使用的函数，代码将类似于下面这样:
+```Python
+from pizza import make_pizza
+
+make_pizza(16, 'pepperoni')
+make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
+```
+若使用这种语法，调用函数时就无需使用句点。由于我们在import语句中显示地导入了函数make_pizza(),因此调用它时只需要指定其名称。
+
+### 8.6.3 使用as给函数指定别名
+如果要导入的函数的名称可能与程序中现有的名称冲突，或者函数的名称太长，可指定简短而独一无二的别名————函数的另一个名称，类似于外号。要给函数指定这种特殊外号，需要在导入它时这样做。
+下面给函数make_pizza()指定了别名mp()。这是在import语句中使用make_pizza as mp实现的，关键字as将函数重命名为你提供的别名：
+```Python
+from pizza import make_pizza as mp
+
+mp(16, 'pepperoni')
+mp(12, 'mushrooms', 'green peppers', 'extra cheese')
+```
+上面的import语句将函数make_pizza()重命名mp()；在这个程序中，每当需要调用make_pizza()时，都可简写成mp()，而Python将运行make_pizza()中的代码，这可避免与这个程序可能包含的函数make_pizza()混淆。
+
+指定别名的通用语法如下：
+```Python
+from moudle_name import function_name as fn
+```
+
+### 8.6.4 使用as给模块指定别名
+你还可以给模块指定别名。通过给模块指定简短的别名(如给模块pizza指定别名p)，让你能够更轻松地调用模块中的函数。相比于pizza.make_pizza()，p.make_pizza()更为简洁:
+```Python
+import pizza as p
+
+p.make_pizza(16, 'pepperoni')
+p.make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
+```
+上述import语句给模块pizza指定了别名p，但该模块中所有函数的名称都没变。调用函数make_pizza()时，可编写代码p.make_pizza()而不是pizza.make_pizza()，这样不仅能使代码更简介，还可以让你不再关注模块名，而专注于描述性的函数名。这些函数名明确地指出了函数的功能，对理解代码而言，它们比模块名更重要。
+给模块指定别名的通用语法如下：
+```Python
+import module_name as mn
+```
+
+### 8.6.5 导入模块中的所有函数
+使用星号(*)运算符可让Python导入模块中的所有函数：
+```Python
+from pizza import *
+
+make_pizza(16, 'pepperoni')
+make_pizza(12, 'mushrooms', 'green peppers', 'extra cheese')
+```
+import语句中的星号让Python将模块pizza中的每个函数都复制到这个程序文件中。由于导入了每个函数，可通过名称来调用每个函数，而无需使用句点表示法。然而，使用并非自己编写的大型模块时，最好不要采用这种导入方法：如果模块中有函数的名称与你的项目中使用的名称相同，可能导致意想不到的结果：Python可能遇到多个名称相同的函数或变量，进而覆盖函数，而不是分别导入所有的函数。
+
+最佳的做法是，要么只导入你需要使用的函数，要么导入整个模块并使用句点表示法。这能让代码更清晰，更容易阅读和理解。这里之所以介绍这种导入方法，只是想让你在阅读别人编写的代码时，如果遇到类似于下面的import语句，能够理解它们：
+```Python
+from module_name import *
+```
+## 8.7 函数编写指南
+编写函数时，需要牢记几个细节。应给函数指定描述性名称，且只在其中使用小写字母和下划线。描述性名称可帮助你和别人明白代码想要做什么。给模块命名时也应遵循上述约定。
+每个函数都应包含简要地阐述其功能的注释，该注释应紧跟在函数定义后面，并采用文档字符串格式。文档良好的函数让其他程序员只需阅读文档字符串中的描述就能够使用它：它们完全可以相信代码如描述的那样运行；只要知道函数的名称、需要的实参以及返回值的类型，就能在自己的程序中使用它。
+给形参指定默认值时，等号两边不要有空格：
+```Python
+def function_name(parameter_0, parameter_1='default value')
+```
+对于函数调用中的关键字实参，也应遵循这种约定：
+```Python
+function_name(value_0, parameter_1='value')
+```
+[PEP 8](https://www.python.org/dev/peps/pep-0008)建议代码行的长度不要超过79字符，这样只要编辑器窗口适中，就能看到整行代码。如果形参很多，导致函数定义的长度超过了79字符，可在函数定义中输入左括号后按回车键，并在下一行按两次Tab键，从而将形参列表和只缩进一层的函数体区分开来。
+
+大多数编辑器都会自动对齐后续参数列表行，使其缩进程度与你给第一个参数列表行指定的缩进程度相同：
+```Python
+def function_name(
+        parameter_0, parameter_1, parameter_2,
+        parameter_3, parameter_4, parameter_5):
+    function body……
+```
+如果程序或模块包含多个函数，可使用两个空行将相邻的函数分开，这样将更容易知道前一个函数在什么地方结束，下一个函数从什么地方开始。
+所有的import语句都应放在文件开头，唯一例外的情形是，在文件开头使用了注释来描述整个程序。
+
+# 第9章 类
+**面向对象编程**是最有效的软件编写方法之一。在面向对象编程中，你编写表示现实世界中的事物和情景的类，并基于这些类来创建对象。编写类时，你定义一大类对象都有的通用行为。基于类创建**对象**时，每个对象都自动具备这种通用行为，然后可根据需要赋予每个对象独特的个性。使用面向对象编程可模拟现实情景，其逼真程度达到了令你惊讶的地步。
+
+根据类来创建对象被称为**实例化**，这让你能够使用类的实例。在本章中，你将编写一些类并创建其实例。你将指定可在实例中存储什么信息，定义可对这些实例执行哪些操作。你还将编写一些类来扩展既有类的功能，让相似的类能够高效地共享代码。你将把自己编写的类存储在模块中，并在自己的程序文件中导入其他程序员编写的类。
+
+理解面向对象编程有助于你像程序员那样看世界，还可以帮助你真正明白自己编写的代码：不仅是各行代码的作用，还有代码背后更宏大的概念。了解类背后的概念可培养逻辑思维，让你能够通过编写程序来解决遇到的几乎任何问题。
+
+随着面临的挑战日益严峻，类还能让你以及与你合作的其他程序员的生活更轻松。如果你与其他程序员基于同样的逻辑来编写代码，你们就能明白对方所做的工作；你编写的程序将能被众多合作者所理解，每个人都能事半功倍。
+## 9.1 创建和使用类
+使用类几乎可以模拟任何东西。下面来编写一个表示小狗的简单类Dog——它表示的不是特定的小狗，而是任何小狗。对于大多数宠物狗，我们都知道些什么呢？它们都有名字和年龄；我们还知道，大多数小狗还会蹲下和打滚。由于大多数小狗都具备上述两项信息(名字和年龄)和两种行为(蹲下和打滚)，我们的Dog类将包含它们。这个类让Python知道如何创建表示小狗的对象。编写这个类后，我们将使用它来创建表示特定小狗的实例。
+
+### 9.1.1 创建Dog类
+根据Dog类创建的每个实例都将存储名字和年龄。我们赋予了每条小狗蹲下(sit())和打滚(roll_over())的能力：
+```Python
+class Dog():
+    """一次模拟小狗的简单尝试"""
+
+    def __init__(self, name, age):
+        """初始化属性name和age"""
+        self.name = name
+        self.age = age
+
+    def sit(self):
+        """模拟小狗被命令时蹲下"""
+        print(self.name.title() + " is now sitting.")
+
+    def roll_over(self):
+        """模拟小狗被命令时打滚"""
+        print(self.name.title() + " rolled over!")
+```
+这里需要注意的地方很多，但你也不用担心，本章充斥着这样的结果，你有大把的机会熟悉它。我们定义了一个名为Dog的类。根据约定，在Python中，首字母大写的名称指的是类。这个类定义中的括号是空的，因为我们要从空白创建这个类。我们编写了一个文档字符串，对这个类的功能作了描述。
+
+1. 方法__init__()
+类中函数称为方法；你前面学到的有关函数的一切都适用与方法，就目前而言，唯一重要的差别是调用方法的方式。方法__init__()是一个特殊的方法，每当你根据Dog类创建新实例时，Python都会自动运行它。在这个方法的名称中，开头和末尾各有两个下划线，这是一种约定，旨在避免Python默认方法与普通方法发生名称冲突。
+
+我们将方法__init__()定义成了包含三个形参：self、name和age。在这个方法的定义中，形参self必不可少，还必须位于其他形参的前面。为何必须在方法定义中包含形参self呢？因为Python调用这个__init__()方法来创建Dog实例时，将自动传入实参self。每个与类相关联的方法调用都自动传递实参self，它是一个指向实例本身的引用，让实例能够访问类中的属性和方法。我们创建Dog实例时，Python将调用Dog类的方法__init__()。我们将通过实参向Dog()传递名字和年龄；self会自动传递，因此我们不需要传递它。每当我们根据Dog类创建实例时，都只需给最后两个形参(name和age)提供值。
+
+self.name……处定义的两个变量都有前缀self。以self为前缀的变量都可供类中的所有方法使用，我们还可以通过类的任何实例来访问这些变量。self.name = name获取存储在形参name中的值，并将其存储到变量name中，然后该变量被关联到当前创建的实例。self.age = age的作用与此类似。像这样可通过实例访问的变量称为**属性**。
+
+Dog类还定义了另外两个方法：sit()和roll_over()。由于这些方法不需要额外的信息，如名字或年龄，因此它们只有一个形参self。我们后面将创建的实例能够访问这些方法，换句话说，它们都会蹲下和打滚。当前，sit()和roll_over()所做的有限，它们只是打印一条消息，指出小狗正蹲下或打滚。但可以扩展这些方法以模拟实际情况：如果这个类包含在一个计算机游戏中，这些方法将包含创建小狗蹲下和打滚动画效果的代码。如果这个类是用于控制机器狗的，这些方法将引导机器狗做出蹲下和打滚的动作。
+
+2. 在Python2.7中创建类
+
+在Python2.7中创建类时，需要做细微的修改————在括号内包含单词object：
+```Python
+class ClassName(object):
+    --snip--
+```
+这让Python2.7类的行为更像Python3类，从而简化了你的工作。
+
+在Python2.7中定义Dog类时，代码类似于下面这样：
+```Python
+class Dog(object):
+    --snip--
+```
+
+### 9.1.2 根据类创建实例
+可将类视为有关如何创建实例的说明。Dog类是一系列的说明，让Python知道如何创建表示特定小狗的实例。
+下面来创建一个表示特定小狗的实例:
+```Python
+class Dog():
+    --snip--
+
+my_dog = Dog('willie', 6)
+
+print("My dog's name is " + my_dog.name.title() + ".")
+print("My dog is " + str(my_dog.age) + " years old.")
+```
+在这里，命名约定很有用：我们通常可以认为首字母大写的名称(如Dog)指的是类，而小写的名称(如my_dog)指的是根据类创建的实例。
+
+1. 访问属性
+
+要访问实例的属性，可使用句点表示法。我们编写了如下代码来访问my_dog的属性name的值：
+```Python
+my_dog.name
+```
+句点表示法在Python中很常用，这种语法演示了Python如何获悉属性的值。在这里，Python先找到实例my_dog，再查找与这个实例相关联的属性。在Dog类中引用这个属性时，使用的是self.name。
+
+2. 调用方法
+   ……
+
+
+## 9.2 使用类和实例
+你可以使用类来模拟现实世界中的很多情景。类编写好后，你的大部分时间都将花费在使用根据类创建的实例上。你需要执行的一个重要任务是修改实例的属性。你可以直接修改实例的属性，也可以编写方法以特定的方式进行修改。
+
+### 9.2.1 Car类
+下面来编写一个表示汽车的类，它存储了有关汽车的信息，还有一个汇总这些信息的方法：
+```Python
+class Car():
+    """一次模拟汽车的简单尝试"""
+
+    def __init__(self, make, model, year):
+        """初始化描述汽车的属性"""
+        self.make = make
+        self.model = model
+        self.year = year
+    
+    def get_descriptive_name(self):
+        """返回整洁的描述性信息"""
+        long_name = str(self.year) + ' ' + self.make + ' ' + self.model
+        return long_name.title()
+
+my_new_car = Car('audi', 'a4', 2016)
+print(my_new_car.get_descriptive_name())
+```
+我们调用方法get_descriptive_name()，指出我们拥有的是一辆什么样的汽车，为让这个类更有趣，下面给它添加一个随时间变化的属性，它存储汽车的总里程。
+
+### 9.2.2 给属性指定默认值
+类中的每个属性都必须有初始值，哪怕这个值是0或空字符串。在有些情况下，如设置默认值时，在方法__init__()内指定这种初始值是可行的；如果你对某个属性这样做了，就无需包含为它提供初始值的形参。
+
+下面来添加一个名为odometer_reading的属性，其初始值总是为0。我们还添加了一个名为read_odometer()的方法，用于读取汽车的历程表：
+```Python
+class Car():
+
+    def __init__(self, make, model, year):
+        """初始化描述汽车的属性"""
+        self.make = make
+        self.model = model
+        self.year = year
+        self.odometer_reading = 0
+    
+    def get_descriptive_name(self):
+        --snip--
+    
+    def read_odometer(self):
+        """打印一条指出汽车历程的消息"""
+        print("This car has " + str(self.odometer_reading) + " miles on it.")
+
+my_new_car = Car('audi', 'a4', 2016)
+print(my_new_car.get_descriptive_name())
+my_new_car.read_odometer()
+```
+现在，当Python调用方法__init__()来创建新实例时，将像前一个实例一样以属性的方式存储制造商、型号和生产年份。接下来，Python将创建一个名为odometer_reading的属性，并将其初始值设置为0。在read_odometer处，我们还定义了一个名为read_odormeter()的方法，它让你能够轻松地获悉汽车的里程。
+
+一开始汽车的里程为0。出售时里程表读数为0的汽车并不多，因此我们需要一个修改该属性的值的途径。
+
+### 9.2.2 修改属性的值
+可以以三种不同的方式修改属性的值：直接通过实例进行修改；通过方法进行设置；通过方法进行递增(增加特定的值)。下面依次介绍这些方法。
+
+1. 直接修改属性的值
+要修改属性的值，最简单的方式是通过实例直接访问它。下面的代码直接将里程表读数设置为23：
+```Python
+class Car():
+    --snip--
+
+my_new_car = Car('audi','a4', 2016)
+print(my_new_car.get_descriptive_name())
+
+my_new_car.odometer_reading = 23
+my_new_car.read_odometer()
+```
