@@ -1159,3 +1159,519 @@ print(my_new_car.get_descriptive_name())
 my_new_car.odometer_reading = 23
 my_new_car.read_odometer()
 ```
+………………
+……………………
+…………………………
+………………………………
+……………………………………
+…………………………………………
+………………………………………………
+……………………………………………………
+………………………………………………
+…………………………………………
+……………………………………
+………………………………
+…………………………
+……………………
+
+## 9.4 导入类
+随着你不断地给类添加功能，文件可能变得很长，即便你妥善地使用了继承亦如此。为遵循Python的总体理念，应让文件尽可能整洁。为在这方面提供帮助，Python允许你将类存储在模块中，然后在主程序中导入所需的模块。
+
+### 9.4.1 导入单个类
+下面来创建一个只包含Car类的模块。这让我们面临一个微妙的命名问题：在本章中，已经有一个名为car.py的文件，但这个模块也应命名为car.py，因为它包含表示汽车的代码。我们将这样解决这个命名问题：将Car类存储在一个名为car.py的模块中，该模块将覆盖前面使用的文件car.py。从现在开始，使用该模块的程序都必须使用更具体的文件名，如my_car.py。下面是模块car.py，其中只包含Car类的代码：
+```Python
+"""一个可用于表示汽车的类"""
+
+class Car():
+    """一次模拟汽车的简单尝试"""
+
+    def __init__(self, make, model, year):
+        """初始化描述汽车的属性"""
+        self.make = make
+        self.model = model
+        self.year = year
+        self.odometer_reading = 0
+
+    def get_descriptive_name(self):
+        """返回整洁的描述性名称"""
+        long_name = str(self.year) + ' ' + self.make + ' ' + self.model
+        return long_name.title()
+
+    def read_odometer(self):
+        """打印一条消息，指出汽车的里程"""
+        print("This car has " + str(self.odometer_reading) + " miles on it.") 
+    
+    def update_odometer(self, mileage):
+        """
+        将里程表读数设置为指定的值
+        拒绝将里程表往回拨
+        """
+        if mileage >= self.odometer_reading:
+            self.odometer_reading = mileage
+        else:
+            print("You can't roll back an odometer!")
+
+    def increment_odometer(self, miles):
+        """将里程表读数增加指定的量"""
+        self.odometer_reading += miles
+
+```
+在解释处，我们包含了一个模块级文档字符串，对该模块的内容做了简要的描述。你应为自己创建的每个模块都编写文档字符串。
+下面来创建另一个文件——my_car.py，在其中导入Car类并创建其实例：
+```Python
+from car import Car
+
+my_new_car = Car('audi', 'a4', 2016)
+print(my_new_car.get_descriptive_name())
+
+my_new_car.odometer_reading = 23
+my_new_car.read_odometer()
+```
+import语句让Python打开模块car，并导入其中的Car类。这样我们就可以使用Car类了，就像它是在这个文件中定义的一样。输出与我们在前面看到的一样。
+……………………………………………………
+……………………………………………………
+……………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+……………………………………………………………………………………………………………………………………………………………………………………………………………………
+
+
+
+# 第10章 文件和异常
+在本章中，你将学习处理文件，让程序能够快速地分析大量的数据；你将学习**错误处理**，避免程序在面对意外情形时崩溃；你将学习**异常**，它们是Python创建的特殊对象，用于管理程序运行时出现的错误；你还将学习**模块json**，它让你能够保存用户数据，以免在程序停止运行后丢失。
+
+学习处理文件和保存数据可让你的程序使用起来更容易：用户将能够选择输入什么样的数据，以及在什么时候输入；用户使用你的程序做一些工作后，可将程序关闭，以后再接着往下做。学习处理异常可帮助你应对文件不存在的情形，以及处理其他可能导致程序崩溃的问题。这让你的程序在面对错误的数据时更健壮————不管这些错误数据源自无意识的错误，还是源自破坏程序的恶意企图。你在本章学习的技能可提高程序的使用性、可用性和稳定性。
+
+## 10.1 从文件中读取数据
+文本文件可存储的数据量多得难以置信：天气数据、交通数据、社会经济数据、文学作品等。每当需要分析或修改存储在文件中的信息时，读取文件都很有用，对数据分析应用程序来说尤其如此。例如，你可以编写一个这样的程序：读取一个文本文件内容，重新设置这些数据的格式并将其写入文件，让浏览器能够显示这些内容。
+要使用文本文件中的信息，首先需要将信息读取到内存中。为此，你可以一次性读取文件的全部内容，也可以以每次一行的方式逐步读取。
+
+### 10.1.1 读取整个文件
+
+要读取文件，需要一个包含几行文本的文件。下面首先来创建一个文件，它包含精确到小数点后30为的圆周率值，且在小数点后每10位处都换行:
+```Python
+3.1415926535
+  8979323846
+  2643383279
+```
+下面的程序打开并读取这个文件，再将其内容显示到屏幕上：
+```Python
+with open('test.txt') as file_object:
+    contents = file_object.read()
+    print(contents)
+```
+在这个程序中，第1行代码做了大量的工作。我们先来看看函数open()。要以任何方式使用文件————哪怕仅仅是打印其内容，都得先**打开**文件，这样才能访问它。**函数open()**接受一个参数：要打开的文件的名称。Python在当前执行的文件所在的目录中查找指定的文件。在这个示例中，当前运行的是main.py，因此Python在main.py所在的目录中查找test.txt。函数open()返回一个表示文件的对象。在这里，open('test.txt')返回一个表示文件test.txt的对象；
+
+相比于原始文件，该输出唯一不同的地方是末尾多了一个空行。为何会多出这个空行呢？因为read()到达文件末尾时返回一个空字符串，而将这个空字符串显示出来时就是一个空行。要删除多出来的空行，可在print语句中使用rstrip()：
+```Python
+with open('pi_digits.txt') as file_object:
+    contents = file_object.read()
+    print(contents.rstrip())
+```
+本书前面说过，Python方法rstrip()删除(剥除)字符串末尾的空白。现在，输出与原始文件的内容完全相同。
+
+### 10.1.1 文件路径
+当你将类似pi_digits.txt这样的简单文件名传递给函数open()时，Python将在当前执行的文件(即.py程序文件)所在的目录中查找文件。
+
+根据你组织文件的方式，有时可能要打开不在程序文件所属目录中的文件。例如，你可能将程序文件存储在了文件夹Python_work中，而在文件夹python_work中，有一个名为text_files的文件夹，用于存储程序文件操作的文本文件。虽然文件夹text_files包含在文件夹python_work中，但仅向open()传递位于该文件夹中的文件的名称也不可行，因为Python只在文件夹python_work中查找，而不会在其子文件夹text_files中查找。要让Python打开不与程序文件位于同一个目录中的文件，需要提供**文件路径**，它让Python到系统的特定位置去查找。
+
+由于文件夹text_files位于文件夹python_work中，因此可使用**相对文件夹路径**来打开该文件夹中的文件。相对文件路径让Python到指定的位置去查找，而该位置是相对于当前运行的程序所在的目录的。在Linux和OS X 中，你可以这样编写代码：
+```Python
+with open('text_files/filename.txt') as file_object:
+```
+这行代码让Python到文件夹python_work下的文件夹text_files中去查找指定的.txt文件。在Windows系统中，在文件路径中使用反斜杠(\)而不是斜杠(/)：
+```Python
+with open('text_files\filename.txt') as file_object
+```
+你还可以将文件在计算机中的准确位置告诉Python，这样就不用关心当前运行的程序存储在什么地方了。这称为**绝对文件路径**。在相对路径不通时，可使用绝对路径。例如，如果text_files并不在文件夹python_work中，而在文件夹other_files中，则向open()传递路径'text_files/filename.txt'行不通，因为Python只在文件夹python_work中查找该位置。为明确地指出你希望Python到哪里去查找，你需要提供完善的路径。
+
+绝对路径通常比相对路径更长，因此将其存储在一个变量中，再将该变量传递open()会有所帮助。在Linux和OS X 中，绝对路径类似于下面这样：
+```Python
+file_path = '/home/ehmatthes/other_files/text_files/filename.txt'
+with open(file_path) as file_object:
+```
+而在Windows系统中，它们类似于下面这样:
+```Python
+file_path = 'C:\Users\ehmathes\other_files\text_files\filename.txt'
+with open(file_path) as file_object:
+```
+通过使用绝对路径，可读取系统任何地方的文件。就目前而言，最简单的做法是，要么将数据文件存储在程序文件所在的目录，要么将存储在程序文件所在目录下的一个文件夹(如text_files)中。
+**注意**
+Windows系统有时能够正确地解读文件路径中的斜杠。如果你使用的是Windows系统，且结果不符合预期，请确保在文件路径中使用的是反斜杠。
+
+### 10.1.3 逐行读取
+读取文件时，常常需要检查其中的每一行：你可能要在文件中查找特定的信息，或者要以某种方式修改文件中的文本。例如，你可能要遍历一个包含天气数据的文件，并使用天气描述中包含字样sunny的行。在新闻报道中，你可能会查找包含标签<headline>的行，并按特定的格式设置它。
+要以每次一行的方式检查文件，可对文件对象使用for循环：
+```Python
+filename = 'pi_digits.txt'
+
+with open(filename) as file_object:
+    for line in file_object:
+        print(line)
+```
+为查看文件的内容，我们通过对文件对象执行循环来遍历文件中的每一行。
+
+我们打印每一行时，发现空白行更多了。因为在这个文件中，每行的末尾都有一个看不见的换行符，而print语句也会加上一个换行符，因此每行末尾都有两个换行符：一个来自文件，另一个来自print语句。要消除这些多余的空白行，可在print语句中使用rstrip():
+```Python
+filename = 'pi_digits.txt'
+
+with open(filename) as file_object:
+    for line in file_object:
+        print(line.rstrip())
+```
+
+### 10.1.4 创建一个包含文件各行内容的列表
+使用关键字with时，open()返回的文件对象只在with代码块内可用。如果要在with代码块外访问文件的内容，可在with代码块内将文件的各行存储在一个列表中，并在with代码块外使用该列表：你可以立即处理文件的各个部分，也可推迟到程序后面再处理。
+
+下面的示例在with代码块中将文件pi_digits.txt的各行存储在一个列表中，再在with代码块外打印它们：
+```Python
+filename = 'pi_digits.txt'
+
+with open(filename) as file_object:
+    lines = file_object.readlines()
+
+for line in lines:
+    print(line.rstrip())
+```
+方法readlines()从文件读取每一行，并将其存储在一个列表中；接下来，该列表被存储到变量lines中；在with代码块外，我们依然可以使用这个变量。我们使用一个简单的for循环来打印lines中的各行。由于列表lines的每个原始都对应于文件中的一行，因此输出与文件内容完全一致。
+
+### 10.1.5 使用文件的内容
+将文件读取到内存中后，就可以以任何方式使用这些数据了。下面以简单的方式使用圆周率的值。首先，我们将创建一个字符串，它包含文件中存储的所有数字，且没有任何空格：
+```Python
+filename = 'pi_digits.txt'
+
+with open(filename) as file_object:
+    lines = file_object.readlines()
+
+pi_string = ''
+for line in lines:
+    pi_string += line.rstrip()
+
+print(pi_string)
+print(len(pi_string))
+```
+在变量pi_string存储的字符串中，包含原来位于每行左边的空格，为删除这些空格，可使用strip()而不是rstrip():
+```Python
+filename = 'pi_30_digits.txt'
+
+with open(filename) as file_object:
+    lines = file_object.readlines()
+
+pi_string = ''
+for line in lines:
+    pi_string += line.strip()
+
+print(pi_string)
+print(len(pi_string))
+```
+这样，我们就获得了一个这样的字符串：它包含精确到30位小数的圆周率值。这个字符串长32字符，因为它还包含整数部分的3和小数点。
+**注意**
+读取文本文件时，Python将其中的所有文本都解读为字符串。如果你读取的是数字，并要将其作为数值使用，就必须使用函数int()将其转换为整数，或使用函数float()将其转换为浮点数。
+### 10.1.6 包含一百万位的大型文件
+前面我们分析的都是一个只有三行的文本文件，但这些代码示例也可处理大得多的文件。如果我们有一个文本文件，其中包含精确到小数点后1 000 000位而不是30位的圆周率值，也可创建一个包含所有这些数字的字符串。为此，我们无需对前面的程序做任何修改，只需将这个文件传递给它即可。在这里，我们只打印到小数点后50位，以免终端为显示全部1 000 000位而不断地翻滚：
+```Python
+filename ='pi_million_digits.txt'
+
+with open(filename) as file_object:
+    lines = file_object.readlines()
+
+pi_string = ''
+for line in lines:
+    pi_string += line.strip()
+
+print(pi_string[:52] + '……')
+print(len(pi_string))
+```
+输出表明，我们创建的字符串确实包含精确到小数点后1 000 000位的圆周率值。
+对于你可处理的数据量，Python没有任何限制；只有系统的内存足够多，你想处理多少数据都可以。
+**注意** 要运行这个程序(以及后面的众多示例)，你需要从https://www.nostarch.com/pythoncra-shcourse/下载相关的资源。
+
+### 10.1.7 圆周率值中包含你的生日吗
+我一直想知道自己的生日是否包含在圆周率值中。下面来扩展刚才编写的程序，以确定某个人的生日是否包含在圆周率值的前1 000 000位中。为此，可将生日表示为一个有数字组成的字符串，再检查这个字符串是否包含在pi_string中：
+```Python
+filename = 'pi_million_digits.txt'
+
+with open(filename) as file_object:
+    lines = file_object.readlines()
+
+pi_string = ''
+for line in lines:
+    pi_string += line.rstrip()
+
+birthday = input("Enter your birthday, in the form mmddyy: ")
+if birthday in pi_string:
+    print("Your birthday appears in the first million digits of pi!")
+else:
+    print("Your birthday does not appear in the first million digits of pi.")
+```
+
+方法replace()将字符串中的特定单词都替换为另一个单词。下面是一个简单的示例，演示了如何将句子中的'dog'替换为'cat':
+```Python
+>>> message = "I really like dogs."
+>>> message.replace('dog', 'cat')
+'I really like cats.'
+```
+
+## 10.2 写入文件
+保存数据的最简单的方式之一是将其写入到文件中。通过将输出写入文件，即便关闭包含程序输出的终端窗口，这些输出也依然存在：你可以在程序结束运行后查看这些输出，可与别人分享输出文件，还可编写程序来将这些输出读取到内存中并进行处理。
+
+### 10.2.1 写入空文件
+要将文本写入文件，你在调用open()时需要提供另一个实参，告诉Python你要写入打开的文件。为明白其中的工作原理，我们来将一条简单的消息存储到文件中，而不是将其打印到屏幕上：
+```Python
+filename = 'programming.txt'
+
+with open(filename, 'w') as file_object:
+    file_object.write("I love programming.")
+```
+在这个示例中，调用open()时提供了两个实参。第一个实参也是要打开的文件的名称；第二个实参('w')告诉Python，我们要以**写入模式**打开这个文件。打开文件时，可指定**读取模式**('r')、**写入模式**('w')、**附加模式**('a')或让你能读取和写入文件的模式('r+')。如果你省略了模式实参，Python将以默认的只读模式打开文件。
+
+如果你要写入的文件不存在，函数open()将自动创建它。然而，以写入('w')模式打开文件时千万要小心，因为如果指定的文件已经存在，Python将返回文件对象前清空该文件。
+**注意** Python只能将字符串写入文本文件。要将数值数据存储到文本文件中，必须先使用函数str()将其转换为字符串格式。
+
+### 10.2.2 写入多行
+函数write()不会在你写入的文本末尾添加换行符，因此如果你写入多行时没有指定换行符，文件看起来可能不是你希望的那样：
+```Python
+filename = 'programming.txt'
+
+with open(filename, 'w') as file_object:
+    file_object.write("I love programming.")
+    file_object.write("I love creating new games.")
+```
+如果你打开programming.txt，将发现两行内容挤在一起。
+要让每个字符串都单独占一行，需要在write()语句中包含换行符：
+```Python
+filename = 'programming.txt'
+
+with open(filename, 'w') as file_object:
+    file_object.write("I love programming.\n")
+    file_object.write("I love creating new games.\n")
+```
+现在，输出出现在不同行中。
+像显示到终端的输出一样，还可以使用空格、制表符和空行来设置这些输出的格式。
+### 10.2.3 附加到文件
+如果你要给文件添加内容，而不是覆盖原有的内容，可以**附加模式**打开文件。你以附加模式打开文件时，Python不会在返回文件对象前清空文件，而你写入到文件的行都将添加到文件末尾。如果指定的文件不存在，Python将为你创建一个空文件。
+下面来修改write_message.py，在既有文件programming.txt中再添加一些你酷爱编程的原因：
+```Python
+filename = 'proggramming.txt'
+
+with open(filename, 'a') as file_object:
+    file_object.write("I also love finding meaning in large dataset.\n")
+    file_object.write("I love creating apps that can run in a browser.\n")
+```
+在这里，我们打开文件时指定了实参'a'，以便将内容附加到文件末尾，而不是覆盖文件原来的内容。在第一个写入两行，它们被添加到文件programming.txt末尾。
+最终的结果是，文件原来的内容还在，它们后面是我们刚添加的内容。
+
+## 10.3 异常
+Python使用被称为**异常**的特殊对象来管理程序执行期间发生的错误。每当发生让Python不知所措的错误时，它都会创建一个异常对象。如果你编写了处理该异常的代码，程序将继续运行；如果你未对异常进行处理，程序将停止，并显示一个traceback，其中包含有关异常的报告。
+
+异常是使用try-except代码块处理的。try-except代码块让Python执行指定的操作，同时告诉Python发生异常时怎么办。使用了try-except代码块时，即便出现异常，程序也将继续运行：显示你编写的友好的错误信息，而不是另用户迷惑的traceback。
+
+### 10.3.1 处理ZeroDivisionError异常
+下面来看一种导致Python引发异常的简单错误。你可能知道不能将一个数字除以0，但我们还是让Python这样做吧：
+```Python
+print(5/0)
+```
+显然，Python无法这样做，因此你将看到一个traceback:
+```Python
+Traceback (most recent call last):
+    File "diision.py", line 1, in <module>
+        print(5/0)
+ZeroDivisionError: division by zero
+```
+在上述traceback中，指出的错误ZeroDivisionError是一个异常对象。Python无法按你的要求做时，就会创建这种对象。这这种情况下，Python将停止运行程序，并指出引发了哪种异常，而我们可根据这些信息对程序进行修改。下面我们将告诉Python，发生这种错误时怎么办；这样，如果再次发生这样的错误，我们就有备无患了。
+
+### 10.3.2 使用try-except代码块
+当你认为可能发生了错误时，可编写一个try-except代码块来处理可能引发的异常。你让Python尝试运行一些代码，并告诉它如果这些代码引发了指定的异常，该怎么办。
+处理ZeroDivisionError异常的try-except代码块类似于下面这样：
+```Python
+try:
+    print(5/0)
+except ZeroDivisionError:
+    print("You can't divide by zero!")
+```
+我们将导致错误的代码行print(5/0)放在了一个try代码块中。如果try代码块中的代码运行起来没有问题，Python将跳过except代码块；如果try代码块中的代码导致了错误，Python将查找这样的except代码块，并运行其中的代码，即其中指定的错误与引发的错误相同。
+在这个示例中，try代码块中的代码引发了ZeroDivisionError异常，因此Python指出了该如何解决问题的except代码块，并运行其中的代码。这样，用户看到的是一条友好的错误消息，而不是traceback:
+```
+You can't divide by zero!
+```
+如果try-except代码块后面还有其他代码，程序将接着运行，因为已经告诉了Python如何处理这种错误。下面来看一个捕获错误后程序将继续运行的示例。
+
+### 10.3.3 使用异常避免崩溃
+
+发生错误时，如果程序还有工作没有完成，妥善地处理错误就尤其重要。这种情况经常会出现在要求用户提供输入的程序中；如果程序能够妥善地处理无效输入，就能再提示用户提供有效输入，而不至于崩溃。
+下面来创建一个只执行除法运算的简单计算器：
+```Python
+print("Give me two numbers, and I'll divide them.")
+print("Enter 'q' to quit.")
+
+while True:
+    first_number = input("\nFirst number: ")
+    if first_number == 'q':
+        break
+    second_number = input("Second number: ")
+    if second_number == 'q':
+        break
+    answer = int(first_number) / int(second_number)
+    print(answer)
+```
+在first_number处，这个程序提示用户输入一个数字，并将其存储到变量first_number中；如果用户输入的不是表示退出的q，就再提示用户输入一个数字，并将其存储到变量second_number中。节下来，我们计算这两个数字的商(即answer)。这个程序没有采取如何处理错误的措施，因此让它执行除数为0的除法运算时，它将崩溃：
+```Python
+Give me two numbers, and I'll divide them/
+Enter 'q' to quit.
+
+First number: 5
+Second number: 0
+Traceback (most recent call last):
+    File "division.py", line 9, in <module>
+        answer = int(first_number) / int(second_number)
+ZeroDivisionError: divisioin by zero
+```
+程序崩溃可不好，但让用户看到traceback也不是好主意。不懂技术的用户会被用户会被它们搞糊涂，而且如果用户怀有恶意，他会通过traceback获悉你不希望他知道的信息。例如，他将知道你的程序文件的名称，还将看到部分不能正确运行的代码。有时候，训练有素的攻击者可根据这些信息判断出可对你的代码发起什么样的攻击。
+
+### 10.3.4 else代码块
+通过将可能引发错误的代码放在try-except代码块中，可提高这个程序抵御错误的能力。错误是执行除法运算的代码行导致的，因此我们需要将它放到try-except代码块中。这个示例还包含一个else代码块；依赖于try代码块成功执行的代码都应放到else代码块中：
+```Python
+print("Give me two numbers, and I'll divide them.")
+print("Enter 'q' to qui.")
+
+while True:
+    first_number = input("\nFirst number: ")
+    if first_number == 'q':
+        break
+    second_number = input("Second number: ")
+    try:
+        answer = int(first_number) / int(second_number)
+    except ZeroDivisionError:
+        print("You can't divide by 0!")
+    else:
+        print(answer)
+```
+我们让Python尝试执行try代码块中的除法运算，这个代码块只包含可能导致错误的代码。依赖于try代码块成功执行的代码都放在else代码块中；在这个示例中，如果除法运算成功，我们就使用else代码块来打印结果。
+except代码块告诉Python，出现ZeroDivisionError异常时该怎么办。如果try代码块因除零错误而失效，我们就打印一条友好的消息，告诉用户如何避免这种错误。程序将继续运行，用户根本看不到traceback。
+try-except-else代码块的工作原理大致如下：Python尝试执行try代码块中的代码；只有可能引发异常的代码才需要放在try语句中。有时候，有一些仅在try代码块成功执行时才需要运行的代码；这些代码应放在else代码块中。except代码块告诉Python，如果它尝试运行try代码块中的代码时引发了指定的异常，该怎么办。
+
+通过预测可能发生错误的代码，可编写健壮的程序，它们即便面临无效数据或缺少资源，也能继续运行，从而能够抵御无意的用户错误和恶意的攻击。
+### 10.3.5 处理FileNotFoundError异常
+使用文件时，一种常见的问题是找不到文件：你要查找的文件可能在其他地方、文件名可能不正确或者这个文件根本就不存在。对于所有这些情形，都可使用try-except代码块以直观的方式进行处理。
+我们来尝试读取一个不存在的文件。下面的程序尝试读取文件alice.txt的内容，但我没有将这个文件存储在alice.py所在的目录中：
+```Python
+filename = 'alice.txt'
+
+with open(filename) as f_obj:
+    contents = f_obj.read()
+```
+Python无法读取不存在的文件，因此它引发一个异常：
+```Python
+Traceback (most recent call last):
+    File "alice.py", line 3, in <module>
+        with open(filename) as f_obj:
+FileNotFoundError: [Errno 2] No such file or directory: 'alice.txt'
+```
+在上述traceback中，最后一行报告了FileNotFoundError异常，这是Python找不到要打开的文件时创建的异常。在这个示例中，这个错误是函数open()导致的，因此要处理这个错误，必须将try语句放在包含open()的代码行之前：
+```Python
+filename = 'alice.txt'
+
+try:
+    with open(filename) as f_obj:
+        contents = f_obj.read()
+except FileNotFoundError:
+    msg = "Sorry, the file " + filename + " does not exist."
+    print(msg)
+```
+在这个示例中，try代码块引发FileNotFoundError异常，因此Python找出与该错误匹配的except代码块，并运行其中的代码。最终的结果是显示一条友好的错误信息，而不是traceback。
+如果文件不存在，这个程序什么都不做，因此错误处理代码的意义不大。下面来扩展这个示例，看看在你使用多个文件时，异常处理可提供什么样的帮助。
+
+### 10.3.6 分析文本
+你可以分析包含整本书的文本文件。很多经典文学作品都是以简单文本文件的方式提供的，因为它们不受版权限制。本节使用的文本来自项目 [Gutenberg](http://gutenberg.org/)，这个项目提供了一系列不受限制的文学作品，如果你要在编程项目中使用文学文本，这是一个很不错的资源。
+
+下面来提取童话 ***Alice in Wonderland*** 的文本，并尝试计算它包含多少个单词。我们将使用方法split()，它根据一个字符串创建一个单词列表。下面是对只包含童话名"Alice in Wonderland"的字符串调用方法split()的结果：
+```Python
+>>> title = "Alice in Wonderland"
+>>> title.split()
+['Alice', 'in', 'Wonderland']
+```
+**方法split()以空格为分隔符将字符串分拆成多个部分**，并将这些部分都存储到一个列表中。结果是一个包含字符串中所有单词的列表，虽然有些单词可能包含标点。为计算 ***Alice in Wonderland*** 包含多少个单词，我们将对整篇小说调用split()，再计算得到的列表包含多少个元素，从而确定整篇童话大致包含多少个单词：
+```Python
+filename = 'alice.txt'
+
+try:
+    with open(filename) as f_obj:
+        contents = f_obj.read()
+except FileNotFoundError:
+    msg = "Sorry, the file " + filename + " does not exist."
+    print(msg)
+else:
+    # 计算文件大致包含多少个单词
+    words = contents.split()
+    num_words = len(words)
+    print("The file " + filename + " has about " + str(num_words) + " words.")
+```
+我们把文件alice.txt移到了正确的目录中，让try代码块能够成功地执行。在words处，我们对变量contents(它现在是一个长长的字符串，包含童话 ***Alice in Wonderland***的全部文本)调用方法split()，以生成一个列表，其中包含这部童话中的所有单词。当我们使用len()来确定这个列表的长度时，就知道了原始字符串大致包含多少个单词。在print处，我们打印一条消息，指出文件包含多少个单词。这些代码都放在else代码块中，因为仅当try代码块成功执行时才执行它们。输出指出了文件alice.txt包含多少个单词。
+```
+The file alice.txt has about 29461 words.
+```
+这个数字有点大，因为这里使用的文本文件包含出版商提供的额外信息，但与童话 ***Alice in Wonderland*** 的长度相对一致。
+### 10.3.7 使用多个文件
+下面多分析几本书。这样做之前，我们先将这个程序的大部分代码移到一个名为count_words()的函数中，这样对多本书进行分析时将更容易：
+```Python
+def count_words(filename):
+    """计算一个文件大致包含多少个单词"""
+    try:
+        with open(filename) as f_obj:
+            contents = f_obj.read()
+        except FileNotFoundError:
+            msg = "Sorry, the file " + filename + " does not exist."
+            print(msg)
+        else:
+            # 计算文件大致包含多少个单词
+            words = contents.split()
+            num_words = len(words)
+            print("The file " + filename + " has about " + str(num_words) + " words.")
+
+filename = 'alice.txt'
+count_words(filename)
+```
+这些代码大都与原来一样，我们只是将它们移到了函数count_words()中，并增加了缩进量。修改程序的同时更新注释是个不错的习惯，因此我们将注释改成了文档 字符串，并稍微调整了以下措辞。
+现在可以编写一个简单的循环，计算要分析的任何文本包含多少个单词了。为此，我们将要分析的文件的名称存储在一个列表中，然后对列表中的每个文件都调用count_words()。我们将尝试计算 ***Alice in Wonderland、Moby Dick和Little Women***分别包含多少个单词，它们都不受版权限制。我故意没有将siddhartha.txt放到word_count.py所在的目录中，让你能够看到这个程序在文件不存在时处理得有多出色：
+```Python
+def count_words(filename):
+    """计算一个文件大致包含多少个单词"""
+    try:
+        with open(filename) as f_obj:
+            contents = f_obj.read()
+        except FileNotFoundError:
+            msg = "Sorry, the file " + filename + " does not exist."
+            print(msg)
+        else:
+            # 计算文件大致包含多少个单词
+            words = contents.split()
+            num_words = len(words)
+            print("The file " + filename + " has about " + str(num_words) + " words.")
+
+filenames = ['alice.txt', 'siddhartha.txt', 'moby_dick.txt', 'little_women.txt']
+for filename in filenames:
+    count_words(filename)
+```
+文件siddhartha.txt不存在，但这丝毫不影响这个程序处理其他文件。
+在这个示例中，使用try-except代码块提供了两个重要的优点：避免让用户看到traceback；让程序能够继续分析能够找到的其他文件。如果不捕获因找不到siddhartha.txt而引发的FileNotFoundError异常，用户将看到完整的traceback，而程序将在尝试分析 ***Sidddhartha***后停止运行————根本不分析 ***Moby Dick 和Little Women***。
+
