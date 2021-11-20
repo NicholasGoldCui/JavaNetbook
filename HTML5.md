@@ -492,4 +492,104 @@ text-overflowd属性的常用取值有两个，具体如下：
 ### 3.5.2 css的层叠性和继承性
 1. 层叠性
    指多种css样式的叠加。例如当使用内嵌式css样式表定义`<p>`标签
- 
+
+
+# 第5章 盒子模型
+         ## 5.1 认识盒子模型
+## 5.2 盒子模型的相关属性
+### 5.2.1 边框属性
+在css中边框属性包括边框样式属性(border-style)、边框宽度属性(border-width)、边框颜色属性(border-color)、单侧边框的属性、边框的综合属性。
+css边框属性
+| 设置内容 | 样式属性 | 常用属性值 |
+| --- | --- | --- |
+| 上边框 | border-top-style:样式; |
+| 上边框 | border-top-width:宽度; |
+| 上边框 | border-top-color:颜色; |
+| 上边框 | border-top:宽度 样式 颜色; |
+| 下边框 | border-bottom-style:样式; |
+| 下边框 | border-bottom-width:宽度; |
+| 下边框 | border-bottom-color:颜色; |
+| 下边框 | border-bottom:宽度 样式 颜色; |
+| 左边框 | border-left-style:样式; |
+| 左边框 | border-left-width:宽度; |
+| 左边框 | border-left-color:颜色; |
+| 左边框 | border-left:宽度 样式 颜色; |
+| 右边框 | border-right-style:样式; |
+| 右边框 | border-right-wdith:宽度; |
+| 右边框 | border-right-color:颜色; |
+| 右边框 | border-right:宽度 样式 颜色; |
+| 样式综合设置 | border-style:上边[右边 下边 左边]; | none无(默认)、solid：单实线、dashed:虚线、dotted:电线、double:双实线 |
+| 宽度综合设置 | border-width: 上边 [右边 下边 左边]; | 像素值 |
+| 颜色综合设置 | border-color: 上边 [右边 下边 左边]; | 颜色值、#十六进制、rgb(r,g,b)、rgb(r%,g%,b%) |
+| 边框综合设置 | border:四边宽度 四边样式 四边颜色; |
+
+1. 边框样式
+border-style属性用于设置边框样式，其属性值如下。
++ none：没有边框，即忽略所有边框的宽度(默认值)。
++ solid：边框为单实线。
++ dashed：边框为虚线。
++ dotted：边框为点线。
++ double：边框为双实线。
+例如，
+```css
+border-style:double;
+```
+单边设置
+border-top-style:上边框样式;
+
+综合设置4条边的样式
+border-style: 上边框样式 右边框样式 下边框样式 左边框样式;
+
+2. 边框宽度
+border-width属性用于设置边框的宽度，其常用取值单位为像素px。同边框样式一样，边框宽度也可以针对4条分别设置，或综合设置4条边的宽度，具体如下:
+```css
+border-top-width: 上边框宽度;
+```
+综合设置4边宽度必须按**上右下左**的顺时针采用值复制，即1个值为4边，2个值为上下/左右，3个值为上/左右/下。
+3. 设置边框颜色
+border-color属性用于设置边框的颜色，其取值可为预定义的颜色英文单词(如，red、blue)、十六进制颜色色值#RRGGBB或RGB模式
+与边框样式和宽度相同，边框颜色的单边与综合设置方式如下：
+border-top-color:上边框颜色;
+
+**注意**
++ 设置边框颜色时同样必须设置边框样式，如果为未设置样式或设置未none，则其他的边框属性无效。
++ 使用RGB模式设置颜色时，如果括号里面的数值为百分比，必须把“0”也加上百分号，写作“0%”。
+
+4. 综合设置边框
+使用border-style、border-width、border-color虽然可以实现丰富的边框效果，但是这种方式书写的代码繁琐，更简单的方式：
+border-top:上边框宽度 样式 颜色;
+……
+border:四边宽度 样式 颜色;
+边框的宽度、样式、颜色顺序任意，不分先后，可以只指定现需要设置的属性，省略部分将取默认值(样式不能省略)。
+### 5.5.2 内边距属性
+为了调整内容在盒子中的显示位置，常常需要给元素设置内边距。内边距也称为内填充，指的是元素内容与边框之间的距离。
+在CSS中padding属性用于设置内边距，同边框属性border一样，padding也是复合属性，其相关设置方式如下：
+```CSS
+padding-top:上边距;
+padding-right:右边距;
+padding-bottom:下内边距;
+padding-left:左内边距;
+padding: 上内边距 [有内边距 下内边距 左内边距];
+```
+在上面的设置中，padding相关顺序的取值为auto自动(默认值)、不同单位的数值、相对于父元素(或浏览器)宽度的百分比。padding不允许使用**负值**。
+**注意**
+若设置内外边距属性值为百分比，则内外边距不论上下或左右，都是相对于父元素宽度width的百分比，随父元素width的变化而变化，和高度height无关。
+### 5.2.3 外边距属性
+外边距指的是标签边框与相邻标签之间的距离。在CSS中margin属性用于设置外边距，它是一个复合属性，与内边距padding的用法类似。方法如下：
+```css
+margin-top:上外边距;
+margin-right:右外边距;
+margin-bottom:下外边距;
+margin-left:左外边距;
+margin:上外边距 [右外边距 下外边距 左外边距];
+```
+外边距可以使用负值，使相邻标签发生重叠。
+当对块级元素应用宽度属性width，并将左右的外边距都设置为auto时，可使块级元素水平居中，实际工作中常用这种方式进行网页布局，示例代码:
+```css
+.num {
+   margin:0 auto;
+}
+```
+### 5.2.4 背景属性
+1. 设置背景色
+在CSS中，网页元素的背景颜色使用background-color属性来设置，其属性值与文本的颜色取值一样。background-color的默认值为transparent，即背景透明
