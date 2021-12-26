@@ -100,7 +100,141 @@ Get-Process [[-name] <string[]>] [<CommonParameters>]
 Get-Process -id <Int32[]> [<CommonParameters>]
 Get-Process -inputObject <Process[]> [<CommonParameters>]
 ```
-Windows PowerShell的有用功能之一就是cmdlet可用语法的标准化。这个功能极大地简化了新外壳和语言的学习难度。
+Windows PowerShell的有用功能之一就是cmdlet可用语法的标准化。这个功能极大地简化了新外壳和语言的学习难度。然而要注意，并非所有cmdlet都支持下列每个参数。然而如果可以支持其中的某个，那么能够实现的功能就是完全一样的，因为Windows PowerShell引擎会对这些参数进行统一解释。
+| 参数 | 含义 |
+| --- | --- |
+| -whatif | 让cmdlet不要执行，而是告诉我们执行会发生什么后果 |
+| -confirm | 让cmdlet在执行之前要求得到我们的确认 |
+| -verbose | 让cmdlet提供更详细的信息(相较于不使用该参数的) |
+| -debug | 让cmdlet提供调试信息 |
+| -erroraction | 让cmdlet在发生错误时执行某些操作，可用操作包括：continue(继续)、stop(停止)、SilentlyContinue(静默继续)以及inquire(询问) |
+| -errorvariable | 让cmdlet使用特定变量保存错误信息，这个方法和标准的$error变量有所不同 |
+| -outvariable | 让cmdlet使用特定变量保存输出信息 |
+| -outbuffier | 让cmdlet在调用管道中的下一个cmdlet之前保存特定数量的对象 |
+
+## 1.7 使用Get-Help
+Windows PowerShell非常易于使用，容易上手，同时附带的联机帮助功能使得程序的使用变得更简单。Windows PowerShell中的帮助系统可以通过下列几种方法使用，要了解Windows PowerShell的更多使用方法，请使用Get-Help cmdlet，方法如下：
+```PowerShell
+Get-help get-help
+```
+这个命令可以显示有关Get-Help cmdlet的帮助信息，如下所示：
+```powershell
+PS C:\Users\你大爷> get-help get-help
+
+名称
+    Get-Help
+
+摘要
+    Displays information about PowerShell commands and concepts.
+
+
+语法
+    Get-Help [[-Name] <System.String>] [-Category {Alias | Cmdlet | Provider | General | FAQ | Glossary | HelpFile | Sc
+    riptCommand | Function | Filter | ExternalScript | All | DefaultHelp | Workflow | DscResource | Class | Configurati
+    on}] [-Component <System.String[]>] -Detailed [-Functionality <System.String[]>] [-Path <System.String>] [-Role <Sy
+    stem.String[]>] [<CommonParameters>]
+
+    Get-Help [[-Name] <System.String>] [-Category {Alias | Cmdlet | Provider | General | FAQ | Glossary | HelpFile | Sc
+    riptCommand | Function | Filter | ExternalScript | All | DefaultHelp | Workflow | DscResource | Class | Configurati
+    on}] [-Component <System.String[]>] -Examples [-Functionality <System.String[]>] [-Path <System.String>] [-Role <Sy
+    stem.String[]>] [<CommonParameters>]
+
+    Get-Help [[-Name] <System.String>] [-Category {Alias | Cmdlet | Provider | General | FAQ | Glossary | HelpFile | Sc
+    riptCommand | Function | Filter | ExternalScript | All | DefaultHelp | Workflow | DscResource | Class | Configurati
+    on}] [-Component <System.String[]>] [-Full] [-Functionality <System.String[]>] [-Path <System.String>] [-Role <Syst
+    em.String[]>] [<CommonParameters>]
+
+    Get-Help [[-Name] <System.String>] [-Category {Alias | Cmdlet | Provider | General | FAQ | Glossary | HelpFile | Sc
+    riptCommand | Function | Filter | ExternalScript | All | DefaultHelp | Workflow | DscResource | Class | Configurati
+    on}] [-Component <System.String[]>] [-Functionality <System.String[]>] -Online [-Path <System.String>] [-Role <Syst
+    em.String[]>] [<CommonParameters>]
+
+    Get-Help [[-Name] <System.String>] [-Category {Alias | Cmdlet | Provider | General | FAQ | Glossary | HelpFile | Sc
+    riptCommand | Function | Filter | ExternalScript | All | DefaultHelp | Workflow | DscResource | Class | Configurati
+    on}] [-Component <System.String[]>] [-Functionality <System.String[]>] -Parameter <System.String> [-Path <System.St
+    ring>] [-Role <System.String[]>] [<CommonParameters>]
+
+    Get-Help [[-Name] <System.String>] [-Category {Alias | Cmdlet | Provider | General | FAQ | Glossary | HelpFile | Sc
+    riptCommand | Function | Filter | ExternalScript | All | DefaultHelp | Workflow | DscResource | Class | Configurati
+    on}] [-Component <System.String[]>] [-Functionality <System.String[]>] [-Path <System.String>] [-Role <System.Strin
+    g[]>] -ShowWindow [<CommonParameters>]
+
+
+说明
+    The `Get-Help` cmdlet displays information about PowerShell concepts and commands, including cmdlets, functions, Co
+    mmon Information Model (CIM) commands, workflows, providers, aliases, and scripts.
+
+    To get help for a PowerShell cmdlet, type `Get-Help` followed by the cmdlet name, such as: `Get-Help Get-Process`.
+
+    Conceptual help articles in PowerShell begin with about_ , such as about_Comparison_Operators . To see all about_ a
+    rticles, type `Get-Help about_*`. To see a particular article, type `Get-Help about_<article-name>`, such as `Get-H
+    elp about_Comparison_Operators`.
+
+    To get help for a PowerShell provider, type `Get-Help` followed by the provider name. For example, to get help for
+    the Certificate provider, type `Get-Help Certificate`.
+
+    You can also type `help` or `man`, which displays one screen of text at a time. Or, `<cmdlet-name> -?`, that is ide
+    ntical to `Get-Help`, but only works for cmdlets.
+
+    `Get-Help` gets the help content that it displays from help files on your computer. Without the help files, `Get-He
+    lp` displays only basic information about cmdlets. Some PowerShell modules include help files. Beginning in PowerSh
+    ell 3.0, the modules that come with the Windows operating system don't include help files. To download or update th
+    e help files for a module in PowerShell 3.0, use the `Update-Help` cmdlet.
+
+    You can also view the PowerShell help documents online in the Microsoft Docs. To get the online version of a help f
+    ile, use the Online parameter, such as: `Get-Help Get-Process -Online`. To read all the PowerShell documentation, s
+    ee the Microsoft Docs PowerShell Documentation (/powershell).
+
+    If you type `Get-Help` followed by the exact name of a help article, or by a word unique to a help article, `Get-He
+    lp` displays the article's content. If you specify the exact name of a command alias, `Get-Help` displays the help
+    for the original command. If you enter a word or word pattern that appears in several help article titles, `Get-Hel
+    p` displays a list of the matching titles. If you enter any text that doesn't appear in any help article titles, `G
+    et-Help` displays a list of articles that include that text in their contents.
+
+    `Get-Help` can get help articles for all supported languages and locales. `Get-Help` first looks for help files in
+    the locale set for Windows, then in the parent locale, such as pt for pt-BR , and then in a fallback locale. Beginn
+    ing in PowerShell 3.0, if `Get-Help` doesn't find help in the fallback locale, it looks for help articles in Englis
+    h, en-US , before it returns an error message or displaying autogenerated help.
+
+    For information about the symbols that `Get-Help` displays in the command syntax diagram, see about_Command_Syntax
+    (./About/about_Command_Syntax.md). For information about parameter attributes, such as Required and Position , see
+    about_Parameters (./About/about_Parameters.md).
+
+    >[!NOTE] > In PowerShell 3.0 and PowerShell 4.0, `Get-Help` can't find About articles in modules unless > the modul
+    e is imported into the current session. This is a known issue. To get About articles > in a module, import the modu
+    le, either by using the `Import-Module` cmdlet or by running a cmdlet > that's included in the module.
+
+
+相关链接
+    Online Version: https://docs.microsoft.com/powershell/module/microsoft.powershell.core/get-help?view=powershell-5.1
+    &WT.mc_id=ps-gethelp
+    about_Command_Syntax
+    about_Comment_Based_Help
+    Get-Command
+    Supporting Updatable Help
+    Update-Help
+    Writing Comment-Based Help Topics
+    Writing Help for PowerShell Cmdlets
+
+备注
+    若要查看示例，请键入: "get-help Get-Help -examples".
+    有关详细信息，请键入: "get-help Get-Help -detailed".
+    若要获取技术信息，请键入: "get-help Get-Help -full".
+    有关在线帮助，请键入: "get-help Get-Help -online"
+```
+Windows Powershell联机帮助中最受欢迎的是，该功能并不只显示有关命令的帮助(这是大部分人需要的)，而且可以显示三种不同级别的信息：Normal(常规)、Detailed(详细)以及Full(完整)。另外，我们还可以获得有关Windwos Powershell的概念信息，这个功能就等于让我们有了一个详细的联机使用手册。为了获得所有帮助信息的列表，可以使用Get-Help about`*`命令，如下所示：
+```powershell
+get-help about*
+```
+这种使用通配符操作的 方法还可以进一步扩展。如果记得使用的是一个“get”cmdlet，而且首字母是“p”，就可以使用下列命令查看符合要求的所有cmdlet：
+```powershell
+get-help get-p*
+```
+然而，假设知道要使用的cmdlet的准确名称，但是忘了相应的语法，这种情况下则可以使用-examples参数。例如，为了获得Get-PSDrive cmdlet的使用语法信息，可以将Get-Help配合-example参数使用，如下所示：
+```powershell
+get-help get-psdrive -exmaples
+```
+
 
 
 
