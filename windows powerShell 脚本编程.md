@@ -234,10 +234,99 @@ get-help get-p*
 ```powershell
 get-help get-psdrive -exmaples
 ```
+为了一次只看到一页帮助内容，还可以让help函数通过more函数显示帮助内容，如果不希望通过拖动滚动条看到完整的帮助内容，那么这个方法就很有用。如下所示：
+```powershell
+get-help get-help | more
+```
 
+为了获得有关get-help cmdlet的详细帮助，可以使用-detailed参数，如下所示：
+```powershell
+get-help get-help -detailed
+```
+如果希望获得有关get-help cmdlet的技术信息，可以使用-full参数，如下所示：
+```powershell
+get-help get-help -full
+```
 
+如果厌倦了重复输入Get-Help，只需为Get-Help创建别名即可。别名(alias)可以代替键盘输入内容的快捷方式，可以用于启动程序或cmdlet。例如，如果需要创建Get-Help的别名，可以为Get-Help指派“gh”键作为别名。
+**提示**
+在为cmdlet创建别名之前，请确认该cmdlet没有其他已经设定的别名。***确认方法***是运行Get-Alias命令。确认无误后可以使用Set-Alias命令为cmdlet指定一个唯一的按键组合。
 
+## 1.8 使用别名以及cmdlet指定别名
+别名功能可以让我们为cmdlet指定快捷键，这样可以简化Windows PowerShell中的输入，并可以让我们按照自己的习惯对命令行语法进行自定义。例如，希望为Get-Help cmdlet创建别名，而不需要每次都输入完整的内容，或者更希望输入“gh”代替，那么只要通过简单的4步操作就可以实现。
+1. 首先，确认希望使用的按键目前没有被指派给其他功能作为别名使用，这样可以避免冲突。
+2. 随后可能还需要复查有关Set-Alias cmdlet的帮助内容。
+3. 完成上述工作后，调用Set-Alias cmdlet，并输入希望创建的名称，以及希望应用别名的目标cmdlet的名称。
+4. 创建好别名后，使用Get-Alias验证别名是否成功创建。
+5. 这一系列操作的完整过程已经包含在本书配套资源chapter01目录下的GhAlias.txt文件中。
 
+(1) 获取目前已经定义的别名的列表，并检查Get-Help cmdlet是否已经设置了别名，或者希望使用的“gh”是否已经被其他别名使用。方法如下：
+```powershell
+get-alias | sort
+```
+(2) 一旦发现Get-Help cmdlet没有创建别名，而且要使用的“gh”没有被指派给其他别名，则需要复查Set-Alias cmdlet的使用语法。这时候可以结合-full参数使用Get-help cmdlet，方法如下：
+```powershell
+get-help set-alias -full
+```
+(3) 使用Set-Alias cmdlet将组合键“gh”指派给Get-Help cmdlet，方法如下：
+```powershell
+set-alias gh get-help
+```
+(4) 使用Get-Alias cmdlet验证别名是否创建成功，方法如下：
+```powershell
+get-alias gh
+```
+**提示**
+如果认为Set-Alias的使用语法有些难以理解，还可以使用命名参数代替默认的绑定位置。不仅如此，还建议使用-whatif参数或confirm参数。我们可以为别名指定描述内容，如果要这样做，需要运行的命令可能与下面类似：
+```powershell
+Set-Alias -Name gh -Value Get-Help -Description "mred help alias" -WhatIf
+```
+
+## 1.9 cmdlet的其他用途
+了解帮助工具和别名的使用后，可以了解Windows PowerShell的cmdlet还有哪些用法。
+**提示**
+Tab键可以自动帮助我们补全没有输入的内容，
+
+因为cmdlet返回的是对象，而不是“字符串值”，因此可以通过返回的对象获得额外的信息。如果处理的只是字符串数据，那么这些额外的信息可能不存在。为获得额外的信息，还可以**使用**管道符(|)，从一个cmdlet中获得信息，并将其填充到其他cmdlet中。
+
+组为最基本的级别，我们可以用获得目录内容列表并调整输出格式的操作作为例子。在获得目录的内容列表后，可能希望调整列表的显示格式，也许希望显示为表格或者列表的形式。在这个过程中有两个独立的操作：获得目录内容列表和调整列表格式。在获得文件夹列表信息后，这个调整格式的任务会在管道的右侧进行。这就是管道的工作方式。
+
+### 1.9.1 使用Get-ChildItem cmdlet
+前面提到，可以使用dir命令获得目录下的文件内容列表。这个命令可用的主要原因在于，Windows PowerShell中为Get-ChildItem cmdlet默认指派了别名，并且使用“dir”按键组合。我们可以通过使用Get-Alias cmdlet确认这一点，相应的过程可以参考GetDirAlias.txt文件。
+```powershell
+PS C:\> Get-Alias dir
+
+CommandType     Name                                               Version    Source                                                                         
+-----------     ----                                               -------    ------                                                                         
+Alias           dir -> Get-ChildItem                                                                                                                         
+```
+在Windows PowerShell中，其实并没有名为“dir”的cmdlet，而我们使用的实际上也并不是“dir”命令。“dir”作为别名被指派给Get-ChildItem cmdlet，因此Windows PowerShell中dir的输出内容和cmd.exe中的有很大不同。在使用Get-Alias cmdlet查看别名的关联情况，会看到这一点。
+**提示**
+在使用Get-ChildItem生成目录列表时，如果希望看到隐藏的和系统的文件以及文件夹，可以使用force参数，即Get-ChildItem -Force。
+
+### 1.9.2 调整输出格式
+在Windows PowerShell中有4个和格式有关的cmdlet，对于这些cmdlet，最常用的有3个：Format-List、Format-Wide以及Format-Table，而第4个Format-Custom则主要用于控制不属于列表、表格或其他格式的内容的输出样式。这个工作是通过使用*.format.ps1 XML文件实现的，我们可以使用*.for mat.ps1 XML文件中定义的默认样式，或者创建自己的format.ps1 XML文件。
+先来看这些格式中cmdlet最常用的Format-List的用法。
+1. Format-List
+Format-List可能是最常用的核心cmdlet之一。例如，使用Get-WmiObject cmdlet查看Win32_LogicalDisk类的属性，那么将看到这个类的默认属性的最小列表。列表内容如下：
+```powershell
+PS C:\> Get-WmiObject Win32_LogicalDisk
+
+DeviceID     : C:
+DriveType    : 3
+ProviderName : 
+FreeSpace    : 38417653760
+Size         : 107381518336
+VolumeName   : 
+
+DeviceID     : D:
+DriveType    : 3
+ProviderName : 
+FreeSpace    : 265053827072
+Size         : 403661910016
+VolumeName   : 
+
+```
 
 
 
