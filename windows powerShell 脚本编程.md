@@ -327,6 +327,182 @@ Size         : 403661910016
 VolumeName   : 
 
 ```
+虽然大部分情况下这样做没什么问题，不过有时候我们可能希望浏览该类中的其他属性。如果希望浏览其他属性，首先需要使用通配符“`*`”，这样可以列出所有可用的属性，如下所示：
+```powershell
+PS C:\> Get-WmiObject Win32_LogicalDisk | Format-List *
+
+PSComputerName               : DESKTOP-MA9I14O
+Status                       : 
+Availability                 : 
+DeviceID                     : C:
+StatusInfo                   : 
+__GENUS                      : 2
+__CLASS                      : Win32_LogicalDisk
+__SUPERCLASS                 : CIM_LogicalDisk
+__DYNASTY                    : CIM_ManagedSystemElement
+__RELPATH                    : Win32_LogicalDisk.DeviceID="C:"
+__PROPERTY_COUNT             : 40
+__DERIVATION                 : {CIM_LogicalDisk, CIM_StorageExtent, CIM_Logical
+                               Device, CIM_LogicalElement...}
+__SERVER                     : DESKTOP-MA9I14O
+__NAMESPACE                  : root\cimv2
+__PATH                       : \\DESKTOP-MA9I14O\root\cimv2:Win32_LogicalDisk.D
+                               eviceID="C:"
+Access                       : 0
+BlockSize                    : 
+Caption                      : C:
+Compressed                   : False
+ConfigManagerErrorCode       : 
+ConfigManagerUserConfig      : 
+CreationClassName            : Win32_LogicalDisk
+Description                  : 本地固定磁盘
+DriveType                    : 3
+ErrorCleared                 : 
+ErrorDescription             : 
+ErrorMethodology             : 
+FileSystem                   : NTFS
+FreeSpace                    : 37714276352
+InstallDate                  : 
+LastErrorCode                : 
+MaximumComponentLength       : 255
+MediaType                    : 12
+Name                         : C:
+NumberOfBlocks               : 
+PNPDeviceID                  : 
+PowerManagementCapabilities  : 
+PowerManagementSupported     : 
+ProviderName                 : 
+Purpose                      : 
+QuotasDisabled               : 
+QuotasIncomplete             : 
+QuotasRebuilding             : 
+Size                         : 107381518336
+SupportsDiskQuotas           : False
+SupportsFileBasedCompression : True
+SystemCreationClassName      : Win32_ComputerSystem
+SystemName                   : DESKTOP-MA9I14O
+VolumeDirty                  : 
+VolumeName                   : 
+VolumeSerialNumber           : 9EE2B42D
+Scope                        : System.Management.ManagementScope
+Path                         : \\DESKTOP-MA9I14O\root\cimv2:Win32_LogicalDisk.D
+                               eviceID="C:"
+Options                      : System.Management.ObjectGetOptions
+ClassPath                    : \\DESKTOP-MA9I14O\root\cimv2:Win32_LogicalDisk
+Properties                   : {Access, Availability, BlockSize, Caption...}
+SystemProperties             : {__GENUS, __CLASS, __SUPERCLASS, __DYNASTY...}
+Qualifiers                   : {dynamic, Locale, provider, UUID}
+Site                         : 
+Container                    : 
+
+PSComputerName               : DESKTOP-MA9I14O
+Status                       : 
+Availability                 : 
+DeviceID                     : D:
+StatusInfo                   : 
+__GENUS                      : 2
+__CLASS                      : Win32_LogicalDisk
+__SUPERCLASS                 : CIM_LogicalDisk
+__DYNASTY                    : CIM_ManagedSystemElement
+__RELPATH                    : Win32_LogicalDisk.DeviceID="D:"
+__PROPERTY_COUNT             : 40
+__DERIVATION                 : {CIM_LogicalDisk, CIM_StorageExtent, CIM_Logical
+                               Device, CIM_LogicalElement...}
+__SERVER                     : DESKTOP-MA9I14O
+__NAMESPACE                  : root\cimv2
+__PATH                       : \\DESKTOP-MA9I14O\root\cimv2:Win32_LogicalDisk.D
+                               eviceID="D:"
+Access                       : 0
+BlockSize                    : 
+Caption                      : D:
+Compressed                   : False
+ConfigManagerErrorCode       : 
+ConfigManagerUserConfig      : 
+CreationClassName            : Win32_LogicalDisk
+Description                  : 本地固定磁盘
+DriveType                    : 3
+ErrorCleared                 : 
+ErrorDescription             : 
+ErrorMethodology             : 
+FileSystem                   : NTFS
+FreeSpace                    : 266487422976
+InstallDate                  : 
+LastErrorCode                : 
+MaximumComponentLength       : 255
+MediaType                    : 12
+Name                         : D:
+NumberOfBlocks               : 
+PNPDeviceID                  : 
+PowerManagementCapabilities  : 
+PowerManagementSupported     : 
+ProviderName                 : 
+Purpose                      : 
+QuotasDisabled               : 
+QuotasIncomplete             : 
+QuotasRebuilding             : 
+Size                         : 403661910016
+SupportsDiskQuotas           : False
+SupportsFileBasedCompression : True
+SystemCreationClassName      : Win32_ComputerSystem
+SystemName                   : DESKTOP-MA9I14O
+VolumeDirty                  : 
+VolumeName                   : 
+VolumeSerialNumber           : C4E3057A
+Scope                        : System.Management.ManagementScope
+Path                         : \\DESKTOP-MA9I14O\root\cimv2:Win32_LogicalDisk.D
+                               eviceID="D:"
+Options                      : System.Management.ObjectGetOptions
+ClassPath                    : \\DESKTOP-MA9I14O\root\cimv2:Win32_LogicalDisk
+Properties                   : {Access, Availability, BlockSize, Caption...}
+SystemProperties             : {__GENUS, __CLASS, __SUPERCLASS, __DYNASTY...}
+Qualifiers                   : {dynamic, Locale, provider, UUID}
+Site                         : 
+Container                    : 
+
+```
+在看到特定类的所有可用属性后，还可以选择只显示自己感兴趣的属性。这时候可以使用上述列表中属性的名称代替通配符“`*`”，如下所示：
+```powershell
+PS C:\> Get-WmiObject Win32_LogicalDisk | Format-List Name, FileSystem, FreeSpace
+
+Name       : C:
+FileSystem : NTFS
+FreeSpace  : 37712777216
+
+Name       : D:
+FileSystem : NTFS
+FreeSpace  : 266487349248
+
+```
+在这里并不需要输入完整的属性名列表，我们可以通过通配符指定属性名称的范围。例如，如果希望看到所有名称以字母“f”开头的属性，可以如下输入：
+```powershell
+PS C:\> Get-WimiObject Win32_LogicalDisk | Format-List f*
+
+FileSystem : NTFS
+FreeSpace  : 37703110656
+
+FileSystem : NTFS
+FreeSpace  : 266455224320
+
+```
+如果希望看到名称**以**字母“n”**以及**“f”开头的属性，则可以如下输入：
+```powershell
+PS C:\> Get-WmiObject Win32_LogicalDisk | Format-List [nf]*
+
+FileSystem     : NTFS
+FreeSpace      : 37702369280
+Name           : C:
+NumberOfBlocks : 
+
+FileSystem     : NTFS
+FreeSpace      : 266455175168
+Name           : D:
+NumberOfBlocks : 
+
+```
+2. Format-Table
+Format-Table cmdlet提供的一系列功能非常适合用于网络管理功能，尤其是该cmdlet可以提供便于快速查看的属性列信息。对于Format-List和Format-Wide，我们可以选择要显示的属性，而在这样做的时候，还可以排除其中不需要的数据。在下面的例子中，首先对硬盘进行查询，以便找到日志文件(具有.log的扩展名)。在考虑输出的内容的时候，可以对要输出的内容进行调整，这时候就可以使用Format-Table cmdlet调整Get-ChildItem cmdlet输出的内容的格式：
+```powershell
+
 
 
 
