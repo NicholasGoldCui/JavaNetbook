@@ -586,7 +586,8 @@ Dfrg.log                                                                  530 20
 000003.log                                                               2119 2021/9/25 10:51:57 
 000003.log                                                                  0 2021/6/14 19:42:07 
 ```
-在配合使用Format-Table时最后一个需要注意的问题是为Sort-Object cmdlet做准备。Sort-Object可以让我们通过属性对数据进行分类，然后用分类的方式显示出来。在本例中，我们为Sort-Object使用别名“sort”，这样可以减少不必要的输入。尽管如此，需要输入的命令依然很长，因此为了增强可读性，
+在配合使用Format-Table时最后一个需要注意的问题是为Sort-Object cmdlet做准备。Sort-Object可以让我们通过属性对数据进行分类，然后用分类的方式显示出来。在本例中，我们为Sort-Object使用别名“sort”，这样可以减少不必要的输入。
+在查看下列命令的时候，请注意一点：数据在发送给Format-Table cmdlet
 
 
 
