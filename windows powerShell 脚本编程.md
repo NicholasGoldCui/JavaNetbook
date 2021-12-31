@@ -587,8 +587,110 @@ Dfrg.log                                                                  530 20
 000003.log                                                                  0 2021/6/14 19:42:07 
 ```
 在配合使用Format-Table时最后一个需要注意的问题是为Sort-Object cmdlet做准备。Sort-Object可以让我们通过属性对数据进行分类，然后用分类的方式显示出来。在本例中，我们为Sort-Object使用别名“sort”，这样可以减少不必要的输入。
-在查看下列命令的时候，请注意一点：数据在发送给Format-Table cmdlet
+在查看下列命令的时候，请注意一点：数据在发送给Format-Table cmdlet之前就已经被分类了，而且在默认情况下，Sort-Object cmdlet会进行升序排序(由小到大)。如果需要，可以使用-descending参数对组织好的的数据进行降序排列。
+```powershell
+PS C:\> Get-ChildItem C:\ -Recourse -Include *.log | Sort -Property length | Format-Table name, lastwritetime, length -AutoSize
 
+Name                                                                  LastWriteTime        Length -AutoSize
+----                                                                  -------------        ------ ---------
+PASSWD.LOG                                                            2021/12/31 19:06:42       0          
+setuperr.log                                                          2021/12/19 07:13:42       0          
+000003.log                                                            2021/10/6 21:23:04        0          
+setuperr.log                                                          2021/12/29 21:18:24       0          
+setuperr.log                                                          2021/12/19 07:24:53       0          
+000003.log                                                            2021/6/14 19:42:07        0          
+setuperr.log                                                          2021/12/19 07:00:02       0          
+setuperr.log                                                          2021/12/19 06:56:35       0          
+setuperr.log                                                          2021/12/30 08:58:51       0          
+PASSWD.LOG                                                            2021/12/20 16:17:53       0          
+rmb.log                                                               2020/12/18 12:07:34       2          
+setuperr.log                                                          2021/12/19 13:22:38     122          
+DtcInstall.log                                                        2021/12/19 07:37:29     192
+```
+其实还有其他排列方法，例如，可以将日志文件的列表按照修改日期降序排列。这样做，就可以看到最近被修改过的日志文件。要实现这个目的，需要修改sort对象，而命令中的其他内容则是一样的。该命令的输出内容如下，从中可以看到，这些日志文件中的大部分都是在登录过程中修改的。
+```powershell
+PS C:\> Get-ChildItem C:\ -Recurse -Include *.log | Sort -Property lastwriteTime -descending | Format-Table name, lastwriteTime, length -AutoSize
+Name                                                                  LastWriteTime        Length
+----                                                                  -------------        ------
+PASSWD.LOG                                                            2021/12/31 19:06:42       0
+setuperr.log                                                          2021/12/19 07:13:42       0
+000003.log                                                            2021/10/6 21:23:04        0
+setuperr.log                                                          2021/12/29 21:18:24       0
+setuperr.log                                                          2021/12/19 07:24:53       0
+000003.log                                                            2021/6/14 19:42:07        0
+setuperr.log                                                          2021/12/19 07:00:02       0
+setuperr.log                                                          2021/12/19 06:56:35       0
+setuperr.log                                                          2021/12/30 08:58:51       0
+PASSWD.LOG                                                            2021/12/20 16:17:53       0
+rmb.log                                                               2020/12/18 12:07:34       2
+setuperr.log                                                          2021/12/19 13:22:38     122
+```
+在查看本书的资源时，可能会注意到，日志文件中有很多错误，这是因为Get-ChildItem cmdlet尝试访问受保护的目录和文件，因此导致有关拒绝访问的信息。
+在开发过程中，这些错误信息非常有用，因为可以让我们知道无法访问的文件和文件夹，然而在分析数据的时候这些信息则会造成不小的困扰。
+典型此类错误信息含有以下内容：
+```powershell
+Get-ChildItem : Access to the path 'C:\Windows\CSC' is denied. At line:1char:14
+```
+在告诉我们导致该错误的cldmet的名称以及导致了该错误的操作方面，这个错误信息很有用，不过我们可以对Get-ChildItem cmdlet使用-ErrorAction 公共参数，并指定SilentlyContinue的方式过滤这些信息。部分代码如下：
+```powershell
+PS C:\> Get-ChildItem C:\ -Recurse -include *.log -errorAction SilentlyContinue | Sort -Property lastwriteTime -descending | Format-Table name, lastwritetime, length -AutoSize
+```
+3. Format-Wide
+
+Format-Wide cmdlet不像Format-Table或Format-List那么有用，因为每个对象只显示一个属性的显示方式存在的局限。但对于某些列表，该cmdlet也很有用。例如，假设只需要本机运行中的进程的列表，那么就可以使用Get-Process cmdlet，并通过管道将结果对象传递给Format-wide cmdlet。具体如下：
+```powershell
+PS C:\> Get-Process | Format-Wide
+
+AggregatorHost                                                                             audiodg                                                                                   
+ChsIME                                                                                     conhost                                                                                   
+conhost                                                                                    csrss                                                                                     
+csrss                                                                                      ctfmon                                                                                    
+dasHost                                                                                    dllhost                                                                                   
+dwm                                                                                        explorer                                                                                  
+fontdrvhost                                                                                fontdrvhost                                                                               
+Idle                                                                                       ielowutil                                                                                 
+Intel_PIE_Service                                                                          lsass                                                                                     
+Memory Compression                                                                         MicrosoftEdgeUpdate                                                                       
+msedge                                                                                     msedge                                                                                    
+
+```
+输出的内容在控制台中使用了很多行，并导致了很多屏幕空间的浪费。因此这时更好的做法是使用-column参数，如下所示：
+```powershell
+PS C:\> Get-Process | Format-Wide -Column 4
+```
+虽然4列输出的方式将列表的长度减少了一半，不过依然没有充分利用屏幕空间。这时候可以考虑编写用于判断-column参数最适合值的脚本，例如，下文的DemoFormatWide.ps1脚本，虽然多了一些步骤，不过这些努力都是值得的。
+DemoFormatWide.ps1
+```powershell
+function funGetProcess()
+{
+    if ($args)
+    {
+        Get-Process | 
+        Format-Wide -autosize
+    }
+    else
+    {
+        Get-Process |
+        Format-Wide -cloumn $i
+    }
+}
+
+cls
+$i= 1
+for ($i ; $i -le 10 ; $i++)
+{
+    Write-Host -ForegroundColor red "`$i is equal to $i"
+    funGetProcess
+}
+    Write-Host -ForeGroundColor red "Now use format-wide -autosize"
+    funGetProcess("auto")
+```
+另一种判断最适合的屏幕输出选项的方式是对Format-Wide使用-autosize参数，如下所示：
+```powershell
+PS C:\> Get-Process | Format-Wide -AutoSize
+```
+
+### 1.9.3 使用Get-Command cmdlet
 
 
 
