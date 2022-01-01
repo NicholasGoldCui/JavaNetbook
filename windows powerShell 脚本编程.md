@@ -859,7 +859,26 @@ PS C:\> $a.LastAccessTime
 2021年12月8日 17:29:28
 
 ```
-如果需要确保在$a变量中的对象确实是文件夹，则可以使用PsIsContainer属性。
+如果需要确保在$a变量中的对象确实是文件夹，则可以使用PsIsContainer属性。Get-Member输出内容中的PsIsContainer是布尔值，因此只能表示为true或false。具体如下所示：
+```powershell
+PS C:\> $a.PsIsContainer
+True
+```
+如果希望使用返回的某种方法。例如，可以使用moveTo方法将文件夹移动到其他位置，Get-Member会告诉我们moveTo方法必须具有字符串输入，用以指出要移动到的目标位置。因此可以将“mytest”文件夹移动到“C:\moved-Folder”，然后使用Test-Path cmdlet检查文件夹是否被移动到新的位置。这些命令的内容如下：
+```powershell
+PS C:\> $a.MoveTo("C:\movedFolder")
+PS C:\> Test-Path C:\movedFolder
+True
+PS C:\> Test-Path C:\mytest
+False
+PS C:\>
+```
+为了确认保存在$a变量中的对象对应的文件夹就是希望操作的文件夹，则可以使用Name属性，这个命令和相关的输出内容如下：
+```powershell
+PS C:\> $a.name
+movedFolder
+```
+
 
 
 
