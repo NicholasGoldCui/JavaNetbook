@@ -691,6 +691,176 @@ PS C:\> Get-Process | Format-Wide -AutoSize
 ```
 
 ### 1.9.3 使用Get-Command cmdlet
+想使用Windows PowerShell，只需要记着最重要的3个cmdlet，即Get-Help、Get-Command以及Get-Member。通过调用3个cmdlet，我们就可以完全掌握Windows PowerShell。
+Get-Command最基本的用法是生成Windows PowerShell可用命令的列表。如果希望快速了解有哪些cmdlet可用，那么这个命令会很有用。Get-Command的基本用法，
+```powershell
+PS C:\> Get-Command
+
+CommandType     Name                                               Version    Source                                                                                                 
+-----------     ----                                               -------    ------                                                                                                 
+Alias           Add-AppPackage                                     2.0.1.0    Appx                                                                                                   
+Alias           Add-AppPackageVolume                               2.0.1.0    Appx                                                                                                   
+Alias           Add-AppProvisionedPackage                          3.0        Dism                                                                                                   
+Alias           Add-ProvisionedAppPackage                          3.0        Dism                                                                                                   
+Alias           Add-ProvisionedAppSharedPackageContainer           3.0        Dism                                                                                                   
+Alias           Add-ProvisionedAppxPackage                         3.0        Dism                                                                                                   
+Alias           Add-ProvisioningPackage                            3.0        Provisioning                                                                                           
+Alias           Add-TrustedProvisioningCertificate                 3.0        Provisioning                                                                                           
+Alias           Apply-WindowsUnattend                              3.0        Dism                                                                                                   
+Alias           Disable-PhysicalDiskIndication                     2.0.0.0    Storage                                                                                                
+```
+默认情况下，Get-Command在创建cmdlet的列表方面功能有限，因此输出的内容非常繁杂。对于这个列表，最好的形式应该是用管道将结果对象传递给Format-List cmdlet，然后只选择显示其中的名称和描述信息。正如在下文的代码中可以看到的，这样输出的内容更容易读，而且对每个命令的定义也更直观明了：
+```powershell
+PS C:\> Get-Command | Format-List name, definition
+
+Name       : Add-AppPackage
+Definition : 
+
+Name       : Add-AppPackageVolume
+Definition : 
+
+Name       : Add-AppProvisionedPackage
+Definition : 
+
+Name       : Add-ProvisionedAppPackage
+Definition : 
+
+Name       : Add-ProvisionedAppSharedPackageContainer
+Definition : 
+
+Name       : Add-ProvisionedAppxPackage
+Definition : 
+
+```
+目前为止，我们已经了解Get-Command cmdlet的一些常规用法，然而对于cmdlet，还可以充分利用对动词和名词的认识，实现更有趣的做法。通过这些信息，我们可以寻找所有在cmdlet的名称中需要调用的“名词”的cmdlet，例如：
+```powershell
+PS C:\> Get-Command -Noun process
+
+CommandType     Name                                               Version    Source                                                                                                 
+-----------     ----                                               -------    ------                                                                                                 
+Cmdlet          Debug-Process                                      3.1.0.0    Microsoft.PowerShell.Management                                                                        
+Cmdlet          Get-Process                                        3.1.0.0    Microsoft.PowerShell.Management                                                                        
+Cmdlet          Start-Process                                      3.1.0.0    Microsoft.PowerShell.Management                                                                        
+Cmdlet          Stop-Process                                       3.1.0.0    Microsoft.PowerShell.Management                                                                        
+Cmdlet          Wait-Process                                       3.1.0.0    Microsoft.PowerShell.Management                                                                        
+```
+如果希望找到名称的名词部分包含字母“p”的cmdlet，则可以通过使用通配符实现目的。这样做可以减少输入的工作量，并帮助查看所有可用cmdlet。该命令内容如下：
+```powershell
+PS C:\> Get-Command -Noun p*
+
+CommandType     Name                                               Version    Source                                                                                                 
+-----------     ----                                               -------    ------                                                                                                 
+Alias           Add-ProvisionedAppPackage                          3.0        Dism                                                                                                   
+Alias           Add-ProvisionedAppSharedPackageContainer           3.0        Dism                                                                                                   
+Alias           Add-ProvisionedAppxPackage                         3.0        Dism                                                                                                   
+Alias           Add-ProvisioningPackage                            3.0        Provisioning                                                                                           
+Alias           Disable-PhysicalDiskIndication                     2.0.0.0    Storage                                                                                                
+Alias           Disable-PhysicalDiskIndication                     1.0.0.0    VMDirectStorage                                                                                        
+Alias           Enable-PhysicalDiskIndication                      2.0.0.0    Storage                                                                                                
+Alias           Enable-PhysicalDiskIndication                      1.0.0.0    VMDirectStorage                                                                                        
+Alias           Get-PhysicalDiskSNV                                2.0.0.0    Storage                                                                                                
+Alias           Get-PhysicalDiskSNV                                1.0.0.0    VMDirectStorage                                                                                        
+Alias           Get-ProvisionedAppPackage                          3.0        Dism                                                                                                   
+Alias           Get-ProvisionedAppSharedPackageContainer           3.0        Dism                                                                                                   
+Alias           Get-ProvisionedAppxPackage                         3.0        Dism                                                                                                   
+Alias           Optimize-ProvisionedAppPackages                    3.0        Dism                                                                                                   
+Alias           Optimize-ProvisionedAppxPackages                   3.0        Dism                                                                                                   
+Alias           Remove-ProvisionedAppPackage                       3.0        Dism                                                                                                   
+Alias           Remove-ProvisionedAppSharedPackageContainer        3.0        Dism                                                                                                   
+Alias           Remove-ProvisionedAppxPackage                      3.0        Dism                                                                                                   
+Alias           Remove-ProvisioningPackage                         3.0        Provisioning                                                                                           
+Alias           Set-ProvisionedAppPackageDataFile                  3.0        Dism                                                                                                   
+Alias           Set-ProvisionedAppXDataFile                        3.0        Dism                                                                                                   
+Function        Add-PartitionAccessPath                            2.0.0.0    Storage                                                                                                
+Function        Add-PhysicalDisk                                   2.0.0.0    Storage                                                                                                
+Function        Add-Printer                                        1.1        PrintManagement                                                                                        
+Function        Add-PrinterDriver                                  1.1        PrintManagement                                                                                        
+Function        Add-PrinterPort                                    1.1        PrintManagement                                                                                        
+Function        Clear-PcsvDeviceLog                                1.0.0.0    PcsvDevice                                                                                             
+Function        Disable-PhysicalDiskIdentification                 2.0.0.0    Storage                                                                                                
+````
+默认情况下，Get-Command cmdlet只显示cmdlet的信息，然而该命令也可用于收集其他项目的信息，甚至.exe文件以及.dll文件。这是因为Get-Command会尝试显示可以在Windows Powershell中运行的所有内容的信息。例如在下面的例子中，会列出所有名称中包含“file”字样的命令。有一点需要记住：这样做只能显示Windwos Powershell中的实体。
+```powershell
+PS C:\> Get-Command -Name *file*
+
+CommandType     Name                                               Version    Source                                                                                                 
+-----------     ----                                               -------    ------                                                                                                 
+Alias           Set-AppPackageProvisionedDataFile                  3.0        Dism                                                                                                   
+Alias           Set-ProvisionedAppPackageDataFile                  3.0        Dism                                                                                                   
+Alias           Set-ProvisionedAppXDataFile                        3.0        Dism                                                                                                   
+Alias           Write-FileSystemCache                              2.0.0.0    Storage                                                                                                
+Alias           Write-FileSystemCache                              1.0.0.0    VMDirectStorage                                                                                        
+Function        Block-FileShareAccess                              2.0.0.0    Storage                                                                                                
+Function        Clear-FileStorageTier                              2.0.0.0    Storage                                                                                                
+Function        Close-SmbOpenFile                                  2.0.0.0    SmbShare                                                                                               
+Function        Debug-FileShare                                    2.0.0.0    Storage                                                                                                
+Function        Disable-NetIPHttpsProfile                          1.0.0.0    NetworkTransition                                                                                      
+Function        Enable-NetIPHttpsProfile                           1.0.0.0    NetworkTransition                                                                                      
+```
+可以使用-commandType参数并限制只搜索cmdlet，以纠正这个问题，修改后的代码内容如下：
+```powershell
+PS C:\> Get-Command -Name *file* -CommandType cmdlet
+
+CommandType     Name                                               Version    Source                                                                                                 
+-----------     ----                                               -------    ------                                                                                                 
+Cmdlet          Add-BitsFile                                       2.0.0.0    BitsTransfer                                                                                           
+Cmdlet          New-FileCatalog                                    3.0.0.0    Microsoft.PowerShell.Security                                                                          
+Cmdlet          New-PSRoleCapabilityFile                           3.0.0.0    Microsoft.PowerShell.Core                                                                              
+Cmdlet          New-PSSessionConfigurationFile                     3.0.0.0    Microsoft.PowerShell.Core                                                                              
+Cmdlet          Out-File                                           3.1.0.0    Microsoft.PowerShell.Utility                                                                           
+Cmdlet          Set-AppXProvisionedDataFile                        3.0        Dism                                                                                                   
+Cmdlet          Test-FileCatalog                                   3.0.0.0    Microsoft.PowerShell.Security                                                                          
+Cmdlet          Test-PSSessionConfigurationFile                    3.0.0.0    Microsoft.PowerShell.Core                                                                              
+Cmdlet          Unblock-File                                       3.1.0.0    Microsoft.PowerShell.Utility                                                                           
+```
+这些例子充分解释了使用Get-Command cmdlet可以搜索的内容类型。
+
+### 1.9.4 使用Get-Member
+Windows PowerShell提供的第3个重要的cmdlet是Get-Member。在将Get-Member作为3个重要的cmdlet之一介绍时，该命令能干什么。
+使Get-Member如此有用的原因在于，该命令可以告诉我们某个对象支持哪些属性和方法。如果还记得上文提到过，Windows PowerShell中的所有东西都是对象，那么就可以领会这个命令的重要性了。不过也许一个简单的例子能更好地说明该命令的价值。
+假设有一个名为“mytest”的文件夹，使用Get-Item cmdlet获得代表该文件夹的对象，以将该引用保存在名为$a的变量中，具体如下所示：
+```powershell
+PS C:\> $a = Get-Item C:\mytest
+```
+$a变量中有一个文件夹对象的实例后，可以用管道将该对象传递给Get-Member cmdlet，以了解这个文件夹对象可以支持的方法和属性。这行命令以及相应的输出内容如下：
+```powershell
+PS C:\> $a | Get-Member
+
+
+   TypeName:System.IO.DirectoryInfo
+
+Name                      MemberType     Definition                                                                                                                                  
+----                      ----------     ----------                                                                                                                                  
+LinkType                  CodeProperty   System.String LinkType{get=GetLinkType;}                                                                                                    
+Mode                      CodeProperty   System.String Mode{get=Mode;}                                                                                                               
+Target                    CodeProperty   System.Collections.Generic.IEnumerable`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]] Ta...
+Create                    Method         void Create(), void Create(System.Security.AccessControl.DirectorySecurity directorySecurity)                                               
+CreateObjRef              Method         System.Runtime.Remoting.ObjRef CreateObjRef(type requestedType)                                                                             
+CreateSubdirectory        Method         System.IO.DirectoryInfo CreateSubdirectory(string path), System.IO.DirectoryInfo CreateSubdirectory(string path, System.Security.AccessCo...
+Delete                    Method         void Delete(), void Delete(bool recursive)                                                                                                  
+EnumerateDirectories      Method         System.Collections.Generic.IEnumerable[System.IO.DirectoryInfo] EnumerateDirectories(), System.Collections.Generic.IEnumerable[System.IO....
+EnumerateFiles            Method         System.Collections.Generic.IEnumerable[System.IO.FileInfo] EnumerateFiles(), System.Collections.Generic.IEnumerable[System.IO.FileInfo] E...
+EnumerateFileSystemInfos  Method         System.Collections.Generic.IEnumerable[System.IO.FileSystemInfo] EnumerateFileSystemInfos(), System.Collections.Generic.IEnumerable[Syste...
+Equals                    Method         bool Equals(System.Object obj)                                                                                                              
+GetAccessControl          Method         System.Security.AccessControl.DirectorySecurity GetAccessControl(), System.Security.AccessControl.DirectorySecurity GetAccessControl(Syst...
+```
+从文件夹成员的列表中可以看到，有一个parent属性。可以使用parent属性信息了解mytest文件夹的父文件夹。具体如下：
+```powershell
+PS C:\> $a.parent
+
+Mode                 LastWriteTime         Length Name                                                                                                                               
+----                 -------------         ------ ----                                                                                                                               
+d--hs-          2022/1/1  上午 09:23                C:\                                                                                                                                
+```
+假设需要知道该文件夹的上次访问时间，可以使用LastAccessTime属性，具体方式如下：
+```powershell
+PS C:\> $a.LastAccessTime
+
+2021年12月8日 17:29:28
+
+```
+如果需要确保在$a变量中的对象确实是文件夹，则可以使用PsIsContainer属性。
+
 
 
 
