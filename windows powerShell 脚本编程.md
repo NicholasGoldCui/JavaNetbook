@@ -878,6 +878,14 @@ PS C:\>
 PS C:\> $a.name
 movedFolder
 ```
+如果需要删除文件夹，则可以用delete方法，如下所示。为了确认文件夹已经被删除，还可以使用“dir m*”命令查看该文件夹是否依然存在。这些命令如下所示。请注意文件夹的删除结果。
+```powershell
+PS C:\> $a.Delete()
+PS C:\> dir m*
+```
+
+## 第2章 Windows PowerShell脚本
+
 
 
 
