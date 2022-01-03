@@ -884,9 +884,84 @@ PS C:\> $a.Delete()
 PS C:\> dir m*
 ```
 
-## 第2章 Windows PowerShell脚本
+# 第2章 Windows PowerShell脚本
+本章目标：
++ 为Windows PowerShell配置脚本策略
++ 运行Windows PowerShell脚本
++ 使用Winows PowerShell流控制语句
++ 使用判断和条件分支语句
++ 识别和使用数据类型
++ 使用正则表达式提供高级匹配功能
++ 使用命令行参数
 
+## 2.1 为什么使用脚本
+对于很多网络管理来说，编写脚本(任何类型的脚本)，相较于服务器的管理，都是一项很头疼的工作。而且大部分公司都有专门的“脚本作者”，有时候甚至不止一个。
+首先，脚本使得对特定命令进行记录变得很容易，如果需要对计算机上的所有共享资源生成列表，那么可以使用Win32_share WMI类，并使用Get-WmiObject cmdlet 获得所需的结果，具体如下：
+```powerShell
+PS C:\> Get-WmiObject Win32_share
 
+Name   Path       Description
+----   ----       -----------
+ADMIN$ C:\WINDOWS 远程管理       
+C$     C:\        默认共享       
+D$     D:\        默认共享       
+IPC$              远程 IPC     
+
+```
+但假设只是需要对所有共享文件创建列表又该怎么样？我们可能并不确定某个共享文件是否是type0共享。因此可能需要在Internet上搜索这些信息，在获得这些信息后，可以使用下列修改后的命令：
+```powershell
+PS C:\> Get-WmiObject win32_share -Filter "type = '0'"
+Name………………
+
+```
+从上面的例子可以看出，只有type0的共享被列了出来，而相应的命令则只有一些很小的变化。
+
+将命令配置为脚本的另一个优势在于更容易修改。相反，以前使用的命令存在限制，只能报告文件共享，但通过修改脚本可以让脚本同时还报告打印机共享、远程管理共享、IPC共享，甚至其他希望看到的共享类型。需要使用“if……else”语句查看是否为脚本提供了命令行参数。
+**提示**
+要检查命令行参数，请寻找$args变量，这是一个用于保存命令行脚本的自动变量。
+
+如果存在命令行参数，则可以使用提供给命令行的值。如果在启动脚本的时候没有提供值，那莪必须给脚本提供默认值。对于这个脚本，可以列出文件共享，并提醒用户将使用默认值。Get-WmiObject的语法则和以前使用VBScript时的情况一样。在些脚本的时候，最好还设置显示usage字符串。下面的脚本GetSharesWithArgs.ps1中就包含协助用户输入正确语法的命令范例。
+GetSharesWithArgs.ps1
+```powershell
+if($args)
+{
+    $type = $args
+    Get-WmiObject win32_share -Filter "type = $type"
+}
+ELSE
+{
+    Write-Host
+    "
+    Using defaults values,file shares type = 0.
+    Other valid types are:
+    2147483651 for disk drive adminshare
+    2147483649for print gueue admin share
+    2147483650 for device admin share
+    2147483651 for ipcs admin share
+    Example:C:\GetSharesWithArgs.ps1'2147483651
+    "
+    Stype='0
+    Get-WmiObject win32_share -Filter"type= $type"
+}
+网络管理员使用Windows PowerShell脚本的另一个原因在于，可以将脚本作为计划任务使用。在Windows的世界中存在很多任务计划引擎，例如通过使用Win32_ScheduledJob WMI类，可以创建、修改和删除计划任务。这个WMI类从Windows NT 4.0时代就提供了。
+对于下文介绍的ListProcessesSortResults.ps1脚本，我们可能就会需要指定计划，每天运行该脚本多次。这个脚本可以对当前进程生成列表，并将结果写入文本文件中的表格里。
+ListProcessSortResults.ps1
+```powershell
+$args = "localhost","loopback","127.0.0.1"
+
+foreach ($i in $args)
+{
+$strFile = "C:\mytest\"+ $i +"Processes.txt"
+Write-Host "Testing" $i "please wait……";
+Get-WmiObject -computername $i -class win32_process |
+Select-Object name, processID, Priority, ThreadCount, PageFaults,
+    PageFileUsage |
+Where-Object {!$_.processID -eq 0} | Sort-Object -property name | 
+Format-Table | Out-File $strFile
+}
+```
+
+## 2.2 配置脚本策略
 
 
 
