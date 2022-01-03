@@ -943,6 +943,7 @@ ELSE
     Stype='0
     Get-WmiObject win32_share -Filter"type= $type"
 }
+```
 网络管理员使用Windows PowerShell脚本的另一个原因在于，可以将脚本作为计划任务使用。在Windows的世界中存在很多任务计划引擎，例如通过使用Win32_ScheduledJob WMI类，可以创建、修改和删除计划任务。这个WMI类从Windows NT 4.0时代就提供了。
 对于下文介绍的ListProcessesSortResults.ps1脚本，我们可能就会需要指定计划，每天运行该脚本多次。这个脚本可以对当前进程生成列表，并将结果写入文本文件中的表格里。
 ListProcessSortResults.ps1
