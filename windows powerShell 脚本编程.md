@@ -963,6 +963,13 @@ Format-Table | Out-File $strFile
 ```
 
 ## 2.2 配置脚本策略
+因为Windows PowerShell中的脚本在默认情况下是不启动的，所以在部署任何脚本或命令之前，需要验证平台对脚本的支持级别。若没有启动支持就尝试运行脚本，就会看到错误信息，脚本也无法运行。这就是所谓的**限制执行策略**。
+在Windows PowerShell中，通过使用Set-ExecutionPolicy cmdlet，可以设置4个不同级别的执行策略。
+限制执行策略可以通过Active Directory目录服务组策略中的“打开脚本执行”策略进行设置，并且可以针对计算机对象和用户对象进行设置，同时计算机独享的策略设置会优先于用户对象的设置。
+**提示**
+要获得脚本执行策略的设置信息，请使用Get-ExecutionPolicy cmdlet。
+
+
 
 
 
