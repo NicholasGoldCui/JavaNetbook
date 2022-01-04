@@ -964,10 +964,63 @@ Format-Table | Out-File $strFile
 
 ## 2.2 配置脚本策略
 因为Windows PowerShell中的脚本在默认情况下是不启动的，所以在部署任何脚本或命令之前，需要验证平台对脚本的支持级别。若没有启动支持就尝试运行脚本，就会看到错误信息，脚本也无法运行。这就是所谓的**限制执行策略**。
-在Windows PowerShell中，通过使用Set-ExecutionPolicy cmdlet，可以设置4个不同级别的执行策略。
+在Windows PowerShell中，通过**使用** **Set-ExecutionPolicy cmdlet**，可以设置4个不同级别的执行策略。
 限制执行策略可以通过Active Directory目录服务组策略中的“打开脚本执行”策略进行设置，并且可以针对计算机对象和用户对象进行设置，同时计算机独享的策略设置会优先于用户对象的设置。
 **提示**
 要获得脚本执行策略的设置信息，请使用Get-ExecutionPolicy cmdlet。
+
+可以使用Set-ExecutionPolicy cmdlet配置应用于用户的限制执行策略，但需要注意的是，这些策略无法覆盖组策略中的设置。为了获得限制执行策略设置的最终结果，请使用Get-ExecutionPolicy cmdlet。
+
+脚本执行策略级别
+| 级别 | 含义 |
+| --- | --- |
+| Restricted | 无法运行脚本或配置文件 |
+| AllSigned | 所有脚本或配置文件必须带有可信任发行商的签名才能运行 |
+| RemoteSigned | 所有从Internet上下载的脚本和配置文件必须带有可信任发行商的签名才能运行 |
+| Unrestricted | 所有脚本和配置文件都能运行，但从Internet上下载的脚本在运行前需要得到批准 |
+
+**注意**
+在Windows Vista中，访问包含脚本执行策略内容的注册表键的活动也会受到限制。即使是管理员，在启动用户账户控制(UAC)的情况下也会被禁止修改设置，会出错。
+解决方法，右击Windows PowerShell的图标，然后选择“以管理员身份运行”。
+
+## 2.3 运行Windows PowerShell脚本
+如果正在Windows PowerShell窗口内，并且启动了执行策略，则可以直接运行脚本，但依然需要提供要运行的脚本的完整路径以及文件名称，包含.ps1扩展名。
+如果希望从外部运行脚本，则必须输入脚本的完整路径，但这些内容必须作为参数提供给PowerShell.exe程序。另外，还可以指定-noexit参数，这样就可以在Windows PowerShell控制台窗口内阅读脚本的输出内容。
+
+## 2.4 使用变量
+在使用Windows PowerShell时，一条默认规则是：在使用某个变量之前，没必要提前声明该变量，在需要使用变量保存数据的时候再声明就可以。所有变量名称前都包含一个美元符号，同时Windows PowerShell中还有一些特殊的变量，这些变量是自动创建的，每一个都又特殊的含义。
+| 名称 | 用途 |
+| --- | --- |
+| $^ | 包含外壳中上一行输入的第一个令牌 |
+| $$ | 包含外壳中上一行输入的最后一个令牌 |
+| $_ | 当前管道对象，可以用于代码块、筛选器、Where-Object、Foreach-Object以及switch |
+| $? | 包含上一个语句运行的成功/失败状态 |
+| $args | 用于创建需要参数的函数 |
+| $error | 如果发生错误，error对象就会被保存到该变量中 |
+| $execuioncontext | cmdlet可用的execution对象 |
+| $foreach | 代表用于foreach遍历的枚举器 |
+| $home | 用户的主目录，被设置为%HOMEDRIVE%\%HOMEPATH% |
+| $input | 将输入内容用管道传递给函数或代码块 |
+| $match | 包含由-match运算符找到的内容组成的哈希表 |
+| $myinvocation | 有关当前执行的脚本或命令行的信息 |
+| $pshome | Windows PowerShell的安装目录 |
+| $host | 有关当前执行宿主的信息 |
+| $Iastexitcode | 上一个要运行的原生程序的退出代码 |
+| $true | 布尔逻辑值True |
+| $false | 布尔逻辑值False |
+| $null | Null对象 |
+| $this | 在types.ps1 XML文件或某些代码块实例中代表当前对象 |
+| $ofs | 转换数组为字符串时的输出字段分隔符 |
+| $shellid | 外壳的标识符，该值可被外壳用于在启动时判断执行策略及配置文件 |
+| $stackrace | 包含上一个错误的详细堆栈追踪信息 |
+
+## 2.5 使用常量
+Windows PowerShell中的常量类似于变量，但有两点区别：常量的值永远不会变化，无法被删除。常量可以使用Set-Variable cmdlet创建，指派-option参数即可创建常量。
+**提示**
+在脚本 代码块中引用常量时，必须将其放在美元符后面，就像其他变量一样。
+然而在创建常量(或变量)时，如果使用Set-Variable cmdlet，在输入name(名称)参数的时候则不需要包含美元符号。
+
+
 
 
 
