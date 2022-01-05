@@ -1018,7 +1018,51 @@ Format-Table | Out-File $strFile
 Windows PowerShell中的常量类似于变量，但有两点区别：常量的值永远不会变化，无法被删除。常量可以使用Set-Variable cmdlet创建，指派-option参数即可创建常量。
 **提示**
 在脚本 代码块中引用常量时，必须将其放在美元符后面，就像其他变量一样。
-然而在创建常量(或变量)时，如果使用Set-Variable cmdlet，在输入name(名称)参数的时候则不需要包含美元符号。
+然而在创建常量(或变量)时，如果使用Set-Variable cmdlet，在输入name(名称)参数的时候则**不需要**包含美元符号。
+
+## 2.6 使用流控制语句
+只要在Windows PowerShell中启动脚本，就会遇到一些高级流控制(flow control) cmdlet。然而这并不意味着不能在控制台进行流控制，我们一样可以在控制台内使用流控制语句，例如：
+```powershell
+PS C:\> Get-Process | foreach ($_.name) { if ($_.name -eq "system") { Write-Host "system process is ID : " $_.ID } }
+```
+这样做的问题在于要输入的内容太多。保存到脚本可以增强可读性及有利于脚本的修改。例：
+GetProcessByID.ps1
+```powershell
+$strProcess = "system"
+Get-Process |
+foreach ($_.name) {
+    if ($_.name -eq $strProcess)
+    {
+        Write-Host "system process is ID :" $_.ID
+    }
+}
+```
+
+### 2.6.1 将参数添加给ForEach-Object
+在GetWmiAndQuery.ps1脚本中，ForEach-Object cmdlet生成了名称中包含“usb”字样的所有WMI类的列表，这个特殊的脚本在获得进程名称和相关的进程ID(PID)方面非常有用。另外，GetProcessByID.ps1脚本还可以通过修改接受命令行参数。如果使用Get-WmiObject cmdlet的list参数，我们即可获得默认WMI命名空间中所有WMI类的完整列表。用管道将返回的对象传递给Where-Object cmdlet，然后使用name属性对结果进行筛选，就像处理保存在$strClass变量中的内容一样。
+
+### 2.6.2 使用begin参数
+使用ForEach-Object cmdlet的-begin参数，可以提供生成的WMI类列表的名称。这个操作并不影响当前管道对象，实际上，无论是-begin参数还是-end参数，都不会和当前管道对象交互。但是这些方式很适合执行预处理和后处理操作。其中-process参数可以用于保存和当前管道对象交互的代码块，而且这是默认参数，且不需要命名。GetWmiAndQuery.ps1脚本内容如下：
+```powershell
+$strClass = "usb"
+Get-WmiObject -List |
+Where { $_.name -like "*$strClass*"} |
+ForEach-Object -begin
+{
+    Write-Host "$strClass wmi listings"
+    Start-Sleep 3
+}
+-Process
+{
+    Get-wmiObject $_.name
+}
+```
+在ProcessUsbHub.ps1脚本中，Get-WmiObject cmdlet会检索Win32_USBHub类的实例。一旦获得了USB Hub对象的集合，就可以用管道对象传递给ForEach-Object cmdlet。我的建议是：为了让脚本更易读，请将-begin、-process以及-end参数都放在脚本的左侧。不过可能需要使用重音符(`'` ，或逆向撇号)表示行的延续。
+**提示**
+环境变量%computername%永远都是可用的，并可用在脚本中，代表计算机的名称。获得改变量的值的一种简便办法是使用Get-Item cmdlet检索env:\psdrive的值，这样可以从value属性中了解计算机
+
+
+
 
 
 
