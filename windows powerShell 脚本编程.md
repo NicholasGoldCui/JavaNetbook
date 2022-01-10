@@ -1059,7 +1059,30 @@ ForEach-Object -begin
 ```
 在ProcessUsbHub.ps1脚本中，Get-WmiObject cmdlet会检索Win32_USBHub类的实例。一旦获得了USB Hub对象的集合，就可以用管道对象传递给ForEach-Object cmdlet。我的建议是：为了让脚本更易读，请将-begin、-process以及-end参数都放在脚本的左侧。不过可能需要使用重音符(`'` ，或逆向撇号)表示行的延续。
 **提示**
-环境变量%computername%永远都是可用的，并可用在脚本中，代表计算机的名称。获得改变量的值的一种简便办法是使用Get-Item cmdlet检索env:\psdrive的值，这样可以从value属性中了解计算机
+环境变量%computername%永远都是可用的，并可用在脚本中，代表计算机的名称。获得改变量的值的一种简便办法是使用Get-Item cmdlet检索env:\psdrive的值，这样可以从value属性中了解计算机的名称。例如可以这样用：(get-Item env:\computerName)value。
+
+另外，-begin这部分代码块可以使用Write-Host cmdlet写入计算机的名称，同时还可以使用子表达式从env:\psdrive获取计算机名称。最后，还可以使用%computername%变量，并获得其值。
+
+### 2.6.3 使用process参数
+在-process部分，可以直接使用当前管道对象(由`$_`自动变量表示)输出Win32_USBHub WMI类的PnpDeviceID属性。另外，需要**使用**重音符代表行的延续。
+
+### 2.6.4 使用end参数
+ProcessUsbHub.ps1脚本的最后一部分包含了-end参数，使用Write-Host cmdlet输出代表命令完成的字符串，然后使用子表达式输出由Get-Date cmdlet返回的值。ProcessUsbHub.ps1脚本内容如下。
+processUsbHub.ps1
+```powershell
+Get-WmiObject win32_usbhub |
+foreach-object `
+-begin { Write-Host "Usb Hubs on:" $(Get-Item env:\computerName).value } `
+-process { $_.pnpDeviceID} `
+-end { Write-Host "The command completed at $(get-date)" }
+```
+
+## 2.7 使用for语句
+使用小括号将需要求值的表达式与包含在大括号中的代码分隔开。要求值的表达式主要分为三部分：第一部分是变量$a，可以为其赋值“1”；第二部分则包含计算条件，在下列代码中，需要变量$a不大于数字“3”，这样代码块部分包含的命令才会被运行；第三部分则会给变量$a的值加“1”。这行代码可以输出“hello”的字样 。
+```powershell
+for ($a = 1; $a -le 3; $a++) {"hello"}
+```
+
 
 
 
