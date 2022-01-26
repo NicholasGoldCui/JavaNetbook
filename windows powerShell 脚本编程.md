@@ -1144,7 +1144,36 @@ Get-EventLog -LogName $strLog -newest $intNew
 **重要提示**
 对cmdlet命令使用变量而不将需要的值硬编码到脚本中的原因之一是，这样做有助于脚本的重复使用。
 
- 在GetNewestLogEntriesAllLogs.ps1中，首先要创建一个名为$
+ 在GetNewestLogEntriesAllLogs.ps1中，首先要创建一个名为$aryLogs的变量，并用其保存使用-List参数后由Get-EventLog cmdlet返回的时间日志对象。在获得了事件日志对象数组后，将数组提交给foreach语句。这时可以对特定的事件日志使用同样的变量名称。随后可用$strLog变量代表保存在$aryLogs变量中的事件日志对象集合内的特定事件日志对象。
+在foreach语句的代码块内，可以使用Write-Host将每个日志结果的i奥体输出。随后使用Write-Host cmdlet的-foregroundcolor参数，并指定将文本输出为绿色，这样就可以将其和屏幕上的其他内容区分开。接着使用重音符(续行符)让命令在下一行连续。通过用这种方法，可以对引号和输出的内容进行排列。如果在$strLog.log命令前不包括一个额外的美元符号，那么输出的内容中将只能包含对象的名称，而不是我们指定的属性值。因为是在双引号内部，因此对于文本的剩余内容(包括$intNew变量)不需要采取任何操作，只需显示双引号内部的值即可。
+在关闭了Write-Host cmdlet 的引号后，使用$strLog对象中Log属性的之让Get-EventLog cmdlet按照名称检索事件日志。另外还可以使用newest参数，并检索保存在$intNew变量中的值所指定数量的事件日志。GetNewestLogEntriesAllLogs.ps1脚本内容如下：
+```powershell
+$aryLogs = Get-EventLog -List
+$intNew = 5
+foreach ($strLog in $aryLogs)
+{
+    Write-Host -ForegroundColor Green `
+    "
+    $($strLog.log) Log Newest $intNew entries
+    "
+    Get-EventLog -LogName $strLog.log -Newest $intNew
+}
+```
+
+### 3.3.2 检索特定的事件日志记录
+如果只需要查看事件日志中最后一条记录的纤细内容(例如某个应用程序崩溃了，希望通过事件日志了解详细信息)，这时可以使用Get-EventLog cmdlet，并指定newest属性为“1”的日志项目。这个方法的使用请参考GetSingleEventLeEntry.ps1脚本，该脚本的内容非常简单，使用了标准的-newest参数检索最后一条记录的信息。GetSingleEventEntry.ps1脚本内容如下。
+GetSingleEventEntry.ps1
+```powershell
+Get-EventLog -LogName application -Newest 1
+```
+大部分情况下，我们可能依然需要获得更多信息，而不仅仅是默认的内容，获得额外信息最简单的办法是用管道将脚本的运行结果传递给Format-List cmdlet。这里完全不需要对GetSingleEventEntry.ps1脚本进行任何修改，因为该脚本可以返回对象，因此用管道将对象传递给另一个cmdlet，就等于将对应的代码输入Windows PowerShell窗口中一样，或者还可以将其他cmdlet添加到脚本中。
+
+获得最新添加记录的更有趣的方法也许是使用Get-EventLog cmdlet的一个特殊功能:该cmdlet可以检索一系列事件日志的集合，而这个集合是索引从0开始的数组。这意味着可以使用Get-EventLog cmdlet的结果检索某一具体的项，因为这个结果是数组，因此可以使用方括号中傲寒的数字机型操作。为此，请在Get-EventLog system命令上添加小括号，例如Get32ndEentLogEntry.ps1脚本中的做法。随后，只要在命令的末尾添加[31]，就可以从事件日志文件中获得第32 项内容。
+Get32ndEventlogEntry.ps1
+```powershell
+(Get-EventLog system)[31]
+```
+
 
 
 
