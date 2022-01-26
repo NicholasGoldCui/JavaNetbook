@@ -1181,6 +1181,24 @@ p = &a;
 **误区警示**
 没有初始化的指针变量俗称“野指针”，使用时容易产生错误（导致不合法的内存空间）。良好的编程习惯是在定义指针变量时就将其初始化为NULL，由于NULL处禁止吸入，所以一旦有错误，可以将错误造成的危害降到最小。
 
+使用指针比较两个数的大小，
+```C
+#include<stdio.h>
+int main()
+{
+	int a=10,b=11;		//定义两个整型变量并初始化 
+	int *ipointer1,*ipointer2;		// 定义两个整型指针变量
+	ipointer1=&a;		// 将地址赋给指针变量
+	ipointer2=&b;
+	if(*ipointer1>*ipointer2)		// 使用指针比较两数大小
+		printf("a的值大\n");
+	else
+		printf("b的值大\n");
+	return 0;
+}
+```
+
+
 
 
 
