@@ -1139,6 +1139,14 @@ $intNew = 50
 Get-EventLog -LogName $strLog -newest $intNew
 ```
 
+### 3.3.1 查看多个日志
+查看的特定日志文件中最新的内容也许可以满足我们的好奇心，但如果需要进行深入的排错，则远远不够。因此可以修改GetNewestLogEntries.ps1脚本，令其可以查询更多日志内容，这样有助于扩展脚本的用途。
+**重要提示**
+对cmdlet命令使用变量而不将需要的值硬编码到脚本中的原因之一是，这样做有助于脚本的重复使用。
+
+ 在GetNewestLogEntriesAllLogs.ps1中，首先要创建一个名为$
+
+
 
 
 
