@@ -1118,6 +1118,28 @@ Get-EventLog application
 ```powershell
 Get-EventLog application > C:\fso\applog.txt
 ```
+### 3.2.2 输出到XML
+另一种更有趣的的处理较长文件的方法是将其导出为可扩展语言(XML)文件。为此，可以使用Export-Clixml cmdlet。该方法的示例请参考WriteAppLogToXML.ps1脚本。要使用该脚本，首先请检索代表当前应用程序日志的对象，为此，请使用Get-EventLog cmdlet并指定要检索的事件日志的名称。在本例中使用的是应用程序日志。用管道将Get-EventLog cmdlet的结果传递给Export-Clixml cmdlet，并使用Export-Clixml cmdlet的参数指定保存输出的XML文件的文件夹和文件名称。该文件夹必须是现有的文件夹，如果不存在，则会发生错误。需要意识到，这个错误信息可能会误导用户。该错误信息说无法打开文件，但我们可能会认为，需要的是导出为XML文件，并不是打开文件。然而这个错误是由丢失文件夹导致的，如果文件夹不存在，cmdlet就无法创建和打开。不过需要注意，在运行cmdlet的时候**不必要求**输出的文件也存在。
+WriteAppLogToXML.ps1
+```powershell
+Get-EventLog application | Export-Clixml -Path C:\fso\applog.xml -Depth 2
+```
+在将时间日志导出为XML文件之后，可以使用Excel打开该文件。为此，只需要选择“数据”选项卡，从“自其他来源”中选择“来自XML数据导入”即可。随后Excel会用几分钟时间转换数据。最后会看到，Excel表格中已经显示了所有的数据。表格中每一列的名称并不是事件日志中的字段名，这里显示的名称会类似“n”或“ns:1”，或者其他类似的名称。但如果查看每一列的数据就会发现，这些名称和保存在日志文件中的数据的名称很容易就能匹配。在Excel程序里，如果要对数据进行筛选，只需要单击每一列顶部的下拉箭头即可。
+
+## 3.3 日志文件概览
+如果只是希望简要查看事件日志中的错误类型的内容，那么可以使用Get-EventLog cmdlet，具体方法请参考GetNewestLogEntries.ps1脚本。这个脚本可以通过使用-newest参数只获取特定数量的日志内容。
+**提示**
+在给cmdlet指定超过一个的参数时，建议定义所有参数的名称。一般来说可以直接使用默认参数，且不使用参数名，但随后依然需要定义可选参数。这个过程可能很奇怪，因此可以这样做：输入另一个连字符，然后再次按下Tab键，完成。这样做并不需要浪费很多时间，而且更稳妥。
+
+在GetNewestLogEntries.ps1脚本中，可以使用$strLog变量保存代表着要连接到的事件日志名称的字符串。同时还可以使用$intNew变量保存要让Get-EventLog获取的事件日志数量的调整。在初始化这些变量后，使用Get-EventLog cmdlet从应用程序日志中获取至少50条记录。通过限制为50条，就可以在速度和功能之间获得一个平衡，这是因为在大部分情况下，这种技术很适合用于对服务器或工作站上某类型的时间进行快速查看。然而这样做并不严谨，因为我们并不知道昨天，甚至前一个小时里，日志中一共写入了多少内容。取决于实际情况，“50”条可能代表了一周、一天或一小时内的内容。
+GetNewestLogEntries.ps1
+```powershell
+$strLog = "application"
+$intNew = 50
+Get-EventLog -LogName $strLog -newest $intNew
+```
+
+
 
 
 ## 第7章 桌面计算机维护
