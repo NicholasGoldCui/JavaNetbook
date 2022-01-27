@@ -1173,6 +1173,22 @@ Get32ndEventlogEntry.ps1
 ```powershell
 (Get-EventLog system)[31]
 ```
+如果不确定事件日志文件中的项目总数，还可以在小括号和方括号内使用另一个Get-EventLog cmdlet，获得应用程序日志的长度，将结果减去“1”(因为索引从0开始)，然后使用获得的数字检查事件日志中的第一项内容。这个过程请参考GetFirstEntry.ps1脚本。
+GetFirstEntry.ps1
+```powershell
+(Get-EventLog application)[(Get-eventlog application).length-1 ] | Format-List *
+```
+如果只需要看到最后一项日志内容，请使用[0]检索项目。这个过程请参考GetLastEvent.ps1脚本。
+**提示**
+在处理事件日志时，需要注意日志是分行显示的。这意味着事件日志中最新的内容永远位于[0]索引位置，因此事件日志中的第一行具有最高的索引号。由于我们可能并不知道最大的索引号是多少，因此可以像GetFirstEntry.ps1 script脚本那样处理日志的长度。
+再次提醒，GetFirstEntry.ps1脚本借助了事件日志对象的一个特征，也就是说，它们是由Get-EventLog cmdlet作为索引集合获得的。这样就可以按照索引号查看其内容。
+GetLastEvent.ps1
+```powershell
+Write-Host "The following is the latest error in the log"
+(Get-EventLog application)[0] | Format-List *
+```
+要查看某一特定日志记录的所有信息，请用管道将结果日志记录对象传递给Format-List cmdlet。
+
 
 
 
