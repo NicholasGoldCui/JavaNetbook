@@ -1189,6 +1189,19 @@ Write-Host "The following is the latest error in the log"
 ```
 要查看某一特定日志记录的所有信息，请用管道将结果日志记录对象传递给Format-List cmdlet。
 
+## 3.4 搜索事件日志
+将事件日志导出为文件、XML或其他格式，然后对内容进行搜索的全过程包含一些额外的步骤，而且不像练级阅读日志那样方便，因此最好提升自己的搜索技巧。搜索事件日志的最简单办法是使用Get-EventLog cmdlet，但不需要将日志保存为其他格式，只要用管道将结果传递给其他可以执行搜索的cmdlet即可。本节会介绍可以实现这一操作的一些技术，其中之一就是
+SearchByEventID.ps1
+```powershell
+Get-EventLog -LogName system | Where-Object { $_.eventID -eq 1129 }
+```
+要搜索事件日志，还需要知道EventLogEntry对象中的成员，该对象实际上是名为System.Diagnostics.EventLogEntry的对象，并且是标准的Microsoft.NET Farmework类。我们可以使用Get-Member cmdlet检索System.Diagnostics.EventLogEntry对象的属性。为此，请用管理将该对象传递给Get-Member cmdlet，下列命令可以实现这一过程，输出的属性内容请参考表。
+
+| 名称 | 描述 |
+| --- | --- |
+| Category | System.String Category {get;} |
+| Category Number | System.Int16 CategoryNumber {get;} |
+| Container | System.ComponentMode.IContainer Container {get;} |
 
 
 
