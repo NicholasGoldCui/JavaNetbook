@@ -1465,6 +1465,28 @@ struct Product
 } product1,product2 ;		// 定义结构体变量
 ```
 
+(2) 直接定义结构体类型变量（此时不需要给出结构体名称）。例如，
+```C
+struct
+{
+	char cName[10];		// 产品名称
+	char cShape[20];		// 形状
+	char cColor[10];		// 颜色
+	int iPrice;		// 价格
+	char cArea[20];		// 产地
+} product1,product2;		// 定义结构体变量
+```
+**注意**
+类型与变量是不同的。例如，只能对变量进行赋值操作，不能对类型进行操作。
+
+### 11.1.3 结构体变量的引用
+定义了结构体类型变量以后，就可以引用该变量，引用形式“结构变量名.成员名”。例如，
+```C
+product1.cName="lcebox";
+product1.iPrice=2000;
+```
+
+
 
 
 
