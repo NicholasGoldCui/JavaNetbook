@@ -2034,6 +2034,190 @@ fputc函数用于把一个字符写到磁盘文件(fp所指向的文件)中。�
 ch=fputc(ch, fp);
 ```
 其中，ch是要写入的字符，可以是一个字符常量，也可以是一个字符变量。fp是文件指针变量，如果函数写入成功，则返回值就是写入的字符；如果写入失败，则返回EOF。
+例，录入歌词
+某唱片公司为歌手录制MV，需要将歌词录入文件中。代码如下：
+```C
+#include<stdio.h>
+#include<process.h>
+int main()
+{
+	FILE *fp;
+	char filename[30],str[30];		// 定义两个字符型数组
+	printf("请输入文件路径：\n");
+	scanf("%s", filename);		// 输入文件名
+	if((fp=fopen(filename,"W"))==NULL)		// 判断文件是否打开失败
+	{
+		printf("不能打开文件!\n请按任意键结束\n");
+		getchar();
+		exit(0);
+	}
+	printf("请输入歌词:\n");		// 提示输入字符串
+	getchar();
+	gets(str);
+	fputs(str,fp);		// 将字符串写入fp所指向的文件中
+	fclose(fp);
+	return 0;
+}
+```
+
+### 14.3.4 fgets函数
+fgets函数与fgetc函数类似，用于从指定的文件中读取一个字符串到字符数组中。其一般形式如下：
+```C
+fgets(字符数组名, n, 文件指针);
+```
+其中，n表示读取的字符串中字符的个数(包含“\0”)。
+例，读取歌曲《500 Miles》歌词
+在E盘创建一个文件sing.txt，文件内容为《500 Miles》的一句歌词，将内容输出在控制台上。
+```C
+#include<stdio.h>
+#include<process.h>
+int main()
+{
+	FILE *fp;
+	char filename[30],str[30];		// 定义两个字符型数组
+	printf("请输入文件路径：\n");
+	scanf("%s", filename);		// 输入文件名
+	if((fp=fopen(filename,"r"))==NULL)		// 判断文件是否打开失败
+	{
+		printf("不能打开文件！\n请按任意键结束\n");
+		getchar();
+		exit(0);
+	}
+	fgets(str,sizeof(str),fp);		// 读取磁盘文件中的内容
+	printf("%s",str);
+	printf("\n");
+	fclose(fp);
+	return 0;
+}
+```
+
+### 14.3.5 fprintf函数
+前面讲过printf和scanf函数，两者都是格式化读写函数。fprintf和fscanf函数与之相似，但读写对象不是终端，而是磁盘文件。
+fprintf函数的一般形式如下：
+```C
+ch=fprintf(文件类型指针，格式字符串，输出列表);
+```
+例如，下面语句的作用是将整型变量i的值“%d”的格式输出到fp指向的文件中。
+```C
+fprintf(fp,"%d",i);
+```
+打印巴斯卡三角形
+输出3行巴斯卡三角形，入戏所示：
+```C
+#include<stdio.h>
+#include<process.h>
+int main()
+{
+	FILE *fp;
+	int i=1;		// 定义一个指向FILE类型结构体的指针变量
+	int j=2;
+	char filename[30];		// 定义一个字符型数组
+	printf("请输入保存文件路径:\n");		// 输入文件名
+	scanf("%s", filename);
+	if((fp=fopen(filename,"W"))==NULL)		// 判断文件是否打开失败
+	{
+		printf("不能打开文件！\n请按任意键结束\n");
+		getchar();
+		exit(0);
+	}
+	fprintf(fp, "%4d\n", i);		// 写入fp所指的磁盘文件中
+	fprintf(fp, "%2d", i);
+	fprintf(fp, "%4d\n", i);
+	fprintf(fp, "%d", i);
+	fprintf(fp, "%3d", j);
+	fprintf(fp, "%4d\n", i);
+	fclose(fp);
+	return 0;
+}
+```
+
+### 14.3.6 fscanf函数
+fscanf函数的一般形式如下：
+```C
+fscanf(文件类型指针, 格式字符串, 输入列表);
+```
+例如，下面语句的作用是读取fp指向文件中的i的值。
+```C
+fscanf(fp, "%d", &i);
+```
+
+例，公布选择题答案
+期末考试后，为便于审阅试卷，需要编写程序将选择题答案显示出来。例如，答案是ACBDDCBADCBCAAB。运行程序前需要在E盘设置answer.txt文件，内容是选择题答案。代码如下：
+```C
+#include<stdio.h>
+#include<process.h>
+int main()
+{
+	FILE *fp;
+	char i,j;
+	char filename[30];
+	printf("请输入文件路径:\n");		// 定义一个字符型数组
+	scanf("%s", filename);		// 输入文件名
+	if((fp=fopen(filename, "r"))==NULL)		// 判断文件是否打开失败
+	{
+		printf("不能打开文件！\n请按任意键继续\n");
+		getchar();
+		exit(0);
+	}
+	for(i=0, i < 15, i++)
+	{
+		fscanf(fp, "%c", &j);
+		printf("%d answer is:%5c\n", i+1, j);
+	}
+	fclose(fp);
+	fclose(fp);
+	return 0;
+}
+```
+
+### 14.3.7 fread和fwrite函数
+实际开发中，往往需要对整块数据进行读写，例如，对一个结构体类型变量值进行读写。
+fread函数的功能是：从fp指向的文件中读取count次，每次读size字节，读取的信息保存在buffer地址中。其一般形式如下：
+```C
+fread(buffer, size, count, fp);
+```
+fwrite函数的功能是：将buffer地址开始的信息输出count次，每次写size字节到fp指向的文件中。其一般形式如下：
+```C
+fwrite(buffer, size, count, fp);
+```
++ buffer:一个指针。对fwrite函数来说，是待输出数据的地址(起始地址)；对fread函数来说，是待读取数据存放的地址。
++ size：要读写的字节数。
++ count：要读写多少个size字节的数据项。
++ fp：文件型指针。
+
+例如，下面的语句表示从fp指向的文件中每次读取两个字节并保存在数组a中，连续读取3次。
+```C
+fread(a, 2, 3, fp);
+```
+下面的语句表示将数组a中的信息每次输出两个字节到fp指向多大文件中，连续输出3次。
+```C
+fwrite(a, 2, 3, fp);
+```
+
+## 14.4 文件的定位
+对文件进行操作时，往往不需要从头开始，而是只操作指定内容。这时，就需要使用文件定位函数来实现对文件的随机读取。
+
+### 14.4.1 fseek函数
+fseek函数的作用是移动文件内部的位置指针。其一般形式如下：
+```C
+fseek(文件类型指针, 位移量, 起始点);
+```
+其中，“文件类型指针”指向被移动的文件；“位移量”表示移动的字节数，一般为long型数据，以保证文件长度大于64KB时不会出错；“起始点”表示从何处开始计算位移量，一般是文件首、文件当前位置和文件尾，其白哦是方法如表
+| 起始点 | 表示符号 | 数字表示 |
+| --- | --- | --- |
+| 文件首 | SEEK——SEt | 0 |
+| 文件当前位置 | SEEK——CUR | 1 |
+| 文件尾 | SEEK——END | 2 |
+
+例如，下面的语句表示将位置指针从当前位置向后退20个字节。
+```C
+fseek(fp, -20L, 1);
+```
+**注意**
+fseek函数一般用于二进制文件。在文本文件中使用时，由于要进行转换，计算的位置会出现错误。
+文件的随机读写在移动位置指针之后进行，即可用前面介绍的任一种读写函数进行读写。
+
+
 
 
 
