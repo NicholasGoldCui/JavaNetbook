@@ -2304,6 +2304,25 @@ WSAStartup函数的功能是初始化套接字库。其原型如下：
 ```C
 int WSAStartup(WORD wVersionRequested, LPWSADATA lpWSAData);
 ```
+**注意**
+WSAStartup函数用于初始化Ws2_32.dll动态链接库。在使用其他套接字函数之前，必须先初始化Ws2_32.dll动态链接库。
++ wVersionRequested：表示调用者使用的WinSock版本，高字节记录修订版本，低字节记录主版本。例如，如果Winsock的版本2.1，则高字节记录1，低字节记录2。
++ lpWSAData：WSADATA结构指针，详细记录了Windows套接字的相关信息。其定义如下：
+```C
+typedef struct WSAData{
+	WORD 	wVersion;
+	WORD 	wHighVersion;
+	char 	szDescription[WSADESCRIPTION_LEN+1];
+	char 	szSystemStatus[WSASYS_STATUS_LEN+1];
+	unsigned short 	iMaxSockets;
+	unsigned short 	iMaxUdpDg;
+	char FAR * 	lpVendorlnfo;
+} WSADATA, FAR *LPWSADATA;
+```
++ wVersion：表示调用者使用的WS2_32.dll动态库的版本号。
++ wHighVersion：表示WS2_32.dll支持的最高版本，通常与wVersion相同。
++ szDescription：表示套接字 描述
+
 
 
 
